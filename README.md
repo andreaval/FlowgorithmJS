@@ -29,23 +29,23 @@ drawFlowchartFromUrl(fprgUrl,tagId,options);
   <script src="lib/jquery-3.3.1.min.js"></script>
   <script src="flowgorithm.js"></script>
   <script>
-    var xml = '<?xml version="1.0"?>
-<flowgorithm fileversion="2.6">
-    <attributes>
+    var xml = `<?xml version="1.0"?>
+    <flowgorithm fileversion="2.6">
+      <attributes>
         <attribute name="name" value="Next number"/>
         <attribute name="authors" value="Andrea Vallorani"/>
         <attribute name="about" value="Print the next of a given number"/>
-    </attributes>
-    <function name="Main" type="None" variable="">
+      </attributes>
+      <function name="Main" type="None" variable="">
         <parameters/>
         <body>
-            <declare name="N, NEXT" type="Integer" array="False" size=""/>
-            <input variable="N"/>
-            <assign variable="NEXT" expression="N+1"/>
-            <output expression="&quot;Next is &quot; &amp; NEXT"/>
+          <declare name="N, NEXT" type="Integer" array="False" size=""/>
+          <input variable="N"/>
+          <assign variable="NEXT" expression="N+1"/>
+          <output expression="&quot;Next is &quot; &amp; NEXT"/>
         </body>
-    </function>
-</flowgorithm>';
+      </function>
+    </flowgorithm>`;
     drawFlowchartFromSource(xml,'#f');
   </script>
 </head>
