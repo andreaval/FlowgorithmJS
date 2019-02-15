@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FlowgorithmJS offline</title>
+  <meta charset="utf-8">
+  <script src="lib/jquery-3.3.1.min.js"></script>
+  <script src="flowgorithm.js?013"></script>
+  <script>
+    var config = {
+        itMode: 2
+    };
+    var xml;
+    function loadFile(){
+        var file = $('#source').get(0).files[0];
+        var reader = new FileReader();
+        reader.addEventListener("load",function(){
+            xml = reader.result;
+            config.groupInput = $("#o1").is(":checked") ? true : false;
+            config.aH = parseInt($("#o2").val());
+            drawFlowchartFromSource(xml,'#f',config);
+            $('#choose').removeClass('big');
+            $('body').addClass('view');
+            $('title').text($('#f div.title').text());
+        },false);
+        if(file){
+            reader.readAsText(file);
+        }
+    }
+  </script>
+  <style>
+    h1{font-size:1.2em}
+    #choose{width:100%;text-align:right;background:#eee;margin:0 0 1em}
+    #choose label{color:#888}
+    #choose.big{border:1px solid #ddd;padding:5em 0;text-align:center;font-size:1.2em;background:none}
+    #choose.big #source{font-size:1.5em}
+    body.view #chooseOption{display:none}
+    body.view h1{float:left;font-size:1em;margin:.1em .5em}
+    @media print{
+        .noprint{display:none}
+        body{margin:1.5cm;padding:0}
+        #f div.desc{border:1px solid #333 !important;margin:0 0 .5em!important;padding:.3em !important;font-size:.9em}
+        #f div.info{display:none}
+        #f{page-break-inside:avoid}
+        svg{height:900px}
+        @page{margin:0}
+    }
+  </style>
+</head>
+<body>
+    <h1 class="noprint">Flowgorithm JS Viewer</h1>
+    <div id="choose" class="big noprint">
+        <label for="source">Select .fprg file</label>
+        <input type="file" onchange="loadFile()" id="source" accept=".fprg">
+    </div>
+    <div id="chooseOption" class="noprint">
+        <label for="o1"><input type="checkbox" value="1" name="groupInput" id="o1" checked> Grouping consecutive input</label><br>
+        <label for="o2">Arrows height: <input type="number" min="1" max="100" value="12" name="groupInput" id="o2"></label>
+    </div>
+    <div id="f"></div>
+</body>
+</html>
