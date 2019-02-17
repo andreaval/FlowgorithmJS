@@ -9,8 +9,8 @@
     var config = {
         itMode: 2
     };
-	var url1 = 'https://andreaval.github.io/FlowgorithmJS/fprg/max3numbers.fprg';
-	var url2 = 'https://andreaval.github.io/FlowgorithmJS/fprg/next.fprg';
+	var url1 = 'fprg/max3numbers.fprg';
+	var url2 = 'fprg/next.fprg';
 	$(function(){
 		drawFlowchartFromUrl(url1,'#f1',config);
 		drawFlowchartFromUrl(url2,'#f2',config);
@@ -18,7 +18,8 @@
   </script>
   <style>
     h1{font-size:1.2em}
-    div.f{width:49%;float:left}
+    div.f{width:49%;float:left;position:relative}
+	div.f .info{left:3;width:20%}
   </style>
 </head>
 <body>
