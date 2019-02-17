@@ -54,3 +54,7 @@ drawFlowchartFromUrl(fprgUrl,tagId,options);
 </body>
 </html>
 ```
+
+## Demo
+
+View file from local computer: https://andreaval.github.io/FlowgorithmJS/drawLocal.html 
