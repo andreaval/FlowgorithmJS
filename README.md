@@ -1,6 +1,6 @@
 # FlowgorithmJS
-[Flowgorithm (www.flowgorithm.org)](http://www.flowgorithm.org) is an excellent software for drawing flowcharts. 
-It use an XML format to generate the output. The XML is saved in files with the **.fprg** extension.
+[Flowgorithm](http://www.flowgorithm.org) is an excellent software for drawing flowcharts. 
+To save the work, it use an XML format stored in files with the **.fprg** extension.
 
 FlowgorithmJS is a **_third-party_** tool written in Javascript that can read and display the .fprg files on a web page using SVG format.
 
