@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="Maximum of 3 numbers"/>
+        <attribute name="authors" value="Andrea Vallorani"/>
+        <attribute name="about" value="Calc the maximum of 3 numbers"/>
+        <attribute name="saved" value="2019-02-17 04.55.01 "/>
+        <attribute name="created" value="YV92YWxsb3Jhbmk7bGludXgtc2VydmVyOzIwMTgtMTAtMjA7MTA6MzY6MjQgQU07MzY4Nw=="/>
+        <attribute name="edited" value="YV92YWxsb3Jhbmk7bGludXgtc2VydmVyOzIwMTgtMTAtMjA7MTI6MTQ6NDQgUE07MTszODEw"/>
+        <attribute name="edited" value="YW5kcmU7REVTS1RPUC1TNFFIVENJOzIwMTktMDItMTc7IjA0LjU1LjAxICI7MTsyODkz"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <declare name="N1, N2, N3, MAX" type="Real" array="False" size=""/>
+            <input variable="N1"/>
+            <input variable="N2"/>
+            <input variable="N3"/>
+            <if expression="N1&gt;N2">
+                <then>
+                    <assign variable="MAX" expression="N1"/>
+                </then>
+                <else>
+                    <assign variable="MAX" expression="N2"/>
+                </else>
+            </if>
+            <if expression="N3&gt;MAX">
+                <then>
+                    <assign variable="MAX" expression="N3"/>
+                </then>
+                <else/>
+            </if>
+            <output expression="MAX" newline="True"/>
+        </body>
+    </function>
+</flowgorithm>

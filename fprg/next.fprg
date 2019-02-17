@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="Next number"/>
+        <attribute name="authors" value="Andrea Vallorani"/>
+        <attribute name="about" value="Print the next of a given number"/>
+        <attribute name="saved" value="2019-02-17 04.28.45 "/>
+        <attribute name="created" value="YW5kcmU7REVTS1RPUC1TNFFIVENJOzIwMTktMDItMTc7IjA0LjI4LjI4ICI7Mjc5NA=="/>
+        <attribute name="edited" value="YW5kcmU7REVTS1RPUC1TNFFIVENJOzIwMTktMDItMTc7IjA0LjI4LjQ1ICI7MTsyOTAx"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <declare name="N, NEXT" type="Integer" array="False" size=""/>
+            <input variable="N"/>
+            <assign variable="NEXT" expression="N+1"/>
+            <output expression="&quot;Next is &quot; &amp; NEXT" newline="True"/>
+        </body>
+    </function>
+</flowgorithm>

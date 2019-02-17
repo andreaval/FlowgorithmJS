@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FlowgorithmJS offline</title>
+  <meta charset="utf-8">
+  <script src="lib/jquery-3.3.1.min.js"></script>
+  <script src="flowgorithm.js?013"></script>
+  <script>
+    var config = {
+        itMode: 2
+    };
+	var url1 = 'https://andreaval.github.io/FlowgorithmJS/fprg/max3numbers.fprg';
+	var url2 = 'https://andreaval.github.io/FlowgorithmJS/fprg/next.fprg';
+	$(function(){
+		drawFlowchartFromUrl(url1,'#f1',config);
+		drawFlowchartFromUrl(url2,'#f2',config);
+	});
+  </script>
+  <style>
+    h1{font-size:1.2em}
+    div.f{width:49%;float:left}
+  </style>
+</head>
+<body>
+    <h1>FlowgorithmJS - Example of use</h1>
+    <div id="f1" class="f"></div>
+    <div id="f2" class="f"></div>
+</body>
+</html>
