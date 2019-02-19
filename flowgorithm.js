@@ -482,7 +482,7 @@ function drawFlowchart($xml,selector,options){
         var s = '<g class="block" transform="translate(0,'+flow.Y+')"><line class="line" x1="0" y1="0" x2="0" y2="'+(options.aH*2)+'"/><circle class="symbol" cx="0" cy="'+(options.aH*2)+'" r="4"/>';
         var oldY = flow.Y;
         flow.Y = 0;
-        var contentDraw = drawSequence($content);
+        var contentDraw = ($content.children().length>0) ? drawSequence($content) : drawEmptyBlock();
         var contentWidth = calcBlockWidth(contentDraw);
         var half = Math.max(calcBlockX(contentDraw)+10,condW2+30);
         flow.Y += 15;
