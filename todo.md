@@ -9,4 +9,4 @@
 - [x] Iterazioni precondizionali definite
 - [x] Gestione di condizioni con all'interno entrambi gli operatori logici && e ||
 - [x] Gestione funzioni
-- [ ] Migliorare posizionamento funzioni
+- [X] Migliorare posizionamento funzioni
