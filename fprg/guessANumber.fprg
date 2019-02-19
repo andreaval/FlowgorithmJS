@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value=""/>
+        <attribute name="authors" value="Nicholas Bennett"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2019-01-23 09:30:34 PM"/>
+        <attribute name="created" value="TmljaG9sYXMgQmVubmV0dDtOQi1JTlNQSVJPTi0xNTsyMDE5LTAxLTIzOzExOjQyOjIwIEFNOzM3ODg="/>
+        <attribute name="edited" value="TmljaG9sYXMgQmVubmV0dDtOQi1JTlNQSVJPTi0xNTsyMDE5LTAxLTIzOzA5OjMwOjM0IFBNOzc7MzkyNg=="/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <while expression="playOneRound()"/>
+            <output expression="&quot;Thanks for playing!&quot;" newline="True"/>
+        </body>
+    </function>
+    <function name="inputAndCheck" type="Boolean" variable="playing">
+        <parameters>
+            <parameter name="secret" type="Integer" array="False"/>
+        </parameters>
+        <body>
+            <declare name="playing" type="Boolean" array="False" size=""/>
+            <assign variable="playing" expression="false"/>
+            <output expression="&quot;What is your guess (1-100, 0 to give up)?&quot;" newline="True"/>
+            <declare name="guess" type="Integer" array="False" size=""/>
+            <input variable="guess"/>
+            <if expression="guess == 0">
+                <then>
+                    <output expression="&quot;You gave up!&quot;" newline="True"/>
+                </then>
+                <else>
+                    <if expression="guess == secret">
+                        <then>
+                            <output expression="&quot;Correct!&quot;" newline="True"/>
+                        </then>
+                        <else>
+                            <if expression="guess &lt; secret">
+                                <then>
+                                    <output expression="&quot;Your guess of &quot; &amp; guess &amp; &quot; is too low.&quot;" newline="True"/>
+                                </then>
+                                <else>
+                                    <output expression="&quot;Your guess of &quot; &amp; guess &amp; &quot; is too high.&quot;" newline="True"/>
+                                </else>
+                            </if>
+                            <assign variable="playing" expression="true"/>
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+    <function name="playOneRound" type="Boolean" variable="playAgain">
+        <parameters/>
+        <body>
+            <declare name="secret" type="Integer" array="False" size=""/>
+            <assign variable="secret" expression="1 + Random(100)"/>
+            <while expression="inputAndCheck(secret)"/>
+            <output expression="&quot;The secret number was &quot; &amp; secret &amp; &quot;.&quot;" newline="True"/>
+            <output expression="&quot;Play again (y/n)?&quot;" newline="True"/>
+            <declare name="userResponse" type="String" array="False" size=""/>
+            <input variable="userResponse"/>
+            <declare name="playAgain" type="Boolean" array="False" size=""/>
+            <assign variable="playAgain" expression="Len(userResponse) &gt; 0&#13;&#10;  &amp;&amp; (Char(userResponse, 0) == &quot;y&quot; || Char(userResponse, 0) == &quot;Y&quot;)"/>
+        </body>
+    </function>
+</flowgorithm>
