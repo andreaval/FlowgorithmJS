@@ -1,6 +1,7 @@
 /**
  * FlowgorithmJS
- * @versione 0.13
+ * @versione 0.14
+ * @date 2019-02-19
  */
 var maxW,maxH,flowX=0,funX=0;
 var flow;
@@ -34,10 +35,11 @@ function drawFlowchart($xml,selector,options){
     if(options.viewDesc){
         var title = $xml.find('attribute[name=name]').attr('value');
         var desc = $xml.find('attribute[name=about]').attr('value');
-        $output.append('<div class="desc" style="margin:0 0 1em;border-bottom:1px solid #aaa;text-align:left">'+desc+'</div><div class="info" style="border:1px dashed #ccc;padding:.5em;font-size:.85em;position:absolute;width:15%;min-width:100px;right:5px">'+
-              '<div class="title"><strong>'+title+'</strong></div>'+
-              '<div class="author">'+$xml.find('attribute[name=authors]').attr('value')+'</div>'+
-              '<div class="date">'+$xml.find('attribute[name=saved]').attr('value')+'</div>'+
+        $output.append('<div class="desc" style="margin:0;border-bottom:1px solid #aaa;text-align:left">'+desc+'</div>'+
+              '<div class="info" style="padding:.5em 0;font-size:.85em;text-align:left">'+
+              '<span class="title"><strong>'+title+'</strong> </span>'+
+              '<span class="author">'+$xml.find('attribute[name=authors]').attr('value')+' </span>'+
+              '<span class="date">'+$xml.find('attribute[name=saved]').attr('value')+' </span>'+
               '<a onclick="downloadSVG(\''+selector+'\',\''+title+'.svg\')" style="cursor:pointer;text-decoration:underline;color:red">Download SVG</a>'+
               '</div>');
     }
@@ -60,10 +62,6 @@ function drawFlowchart($xml,selector,options){
     $xml.find('function').each(function(){
         svg += drawFunction($(this));
     });
-    $('#ttest').empty().get(0).append(svg);
-    var x = $('#ttest').get(0).getBBox().x/100;
-    var h = Math.max.apply(Math,flow.dim);
-    var w = funX;
     $svg = $output.children('svg');
     $svg.get(0).innerHTML += '<g transform="translate(0,0)">'+svg+'</g>';
     $svg.children('g').eq(0).remove();
@@ -99,9 +97,17 @@ function drawFlowchart($xml,selector,options){
         var s = drawStart(txtStart);
         s += drawSequence($xml.children('body'));
         s += drawEnd(txtEnd);
+        $('#gtest').get(0).innerHTML = '<g transform="translate(0,0)">'+s+'</g>';
+        var fwidth = $('#gtest').children('g').get(0).getBBox().width+5;
+        var fx = Math.abs($('#gtest').children('g').get(0).getBBox().x);
         var tempX = funX;
-        funX += (maxW+102);
-        if(maxW==0) maxW=2;
+        if(tempX!=0){
+            tempX+=fx;
+            funX+=fwidth;
+        }
+        else{
+            funX=fwidth-fx;
+        }
         flow.dim.push(flow.Y+20);
         return '<g transform="translate('+(tempX)+',10)" class="function '+name+'">'+s+'</g>';
     };
@@ -251,6 +257,13 @@ function drawFlowchart($xml,selector,options){
         flow.Y += 50+options.aH;
         return s;
     };
+    function drawEmptyBlock(){
+        var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
+                '<polyline class="line" points="0,0 0,'+(options.aH*3)+'" />'+
+                '</g>';
+        flow.Y += options.aH*3;
+        return s;
+    };
     function splitCondition(condition){
         condition = condition.replace(/ AND /gi," && ").replace(/ OR /gi," || ");
         var parts = condition.split(/&&|\|\|/);
@@ -375,7 +388,7 @@ function drawFlowchart($xml,selector,options){
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+drawArrow();
         var oldY = flow.Y;
         flow.Y = 0;
-        var contentDraw = drawSequence($content);
+        var contentDraw = ($content.children().length>0) ? drawSequence($content) : drawEmptyBlock();
         var contentWidth = calcBlockWidth(contentDraw);
         var half = Math.max(calcBlockX(contentDraw),40);
         flow.Y += 25;
