@@ -10,3 +10,5 @@
 - [x] Gestione di condizioni con all'interno entrambi gli operatori logici && e ||
 - [x] Gestione funzioni
 - [X] Migliorare posizionamento funzioni
+- [ ] Add pre-load and post-load events
+- [ ] Add "viewDesc" and "itMode" settings to "drawLocal" page 
