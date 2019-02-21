@@ -1,4 +1,4 @@
-# Da fare
+# To-do
 
 - [x] Allargare in altezza la figura della condizione quando il testo è superiore di un TOT di caratteri e all'interno ci sono operatori logici
 - [x] Rivedere il calcolo della larghezza delle figure di I/O perchè un testo lungo esce dai bordi
