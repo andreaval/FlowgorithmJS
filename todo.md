@@ -9,6 +9,6 @@
 - [x] Iterazioni precondizionali definite
 - [x] Gestione di condizioni con all'interno entrambi gli operatori logici && e ||
 - [x] Gestione funzioni
-- [X] Migliorare posizionamento funzioni
+- [x] Migliorare posizionamento funzioni
 - [ ] Add pre-load and post-load events
-- [ ] Add "viewDesc" and "itMode" settings to "drawLocal" page 
+- [x] Add "viewDesc" and "itMode" settings to "drawLocal" page 
