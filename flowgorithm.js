@@ -1,7 +1,8 @@
 /**
  * FlowgorithmJS
- * @versione 0.14
- * @date 2019-02-19
+ * @version 0.15
+ * @date 2019-03-05
+ * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  */
 var maxW,maxH,flowX=0,funX=0;
 var flow;
@@ -97,9 +98,8 @@ function drawFlowchart($xml,selector,options){
         var s = drawStart(txtStart);
         s += drawSequence($xml.children('body'));
         s += drawEnd(txtEnd);
-        $('#gtest').get(0).innerHTML = '<g transform="translate(0,0)">'+s+'</g>';
-        var fwidth = $('#gtest').children('g').get(0).getBBox().width+5;
-        var fx = Math.abs($('#gtest').children('g').get(0).getBBox().x);
+        var fwidth = calcBlockWidth(s)+5;
+        var fx = calcBlockX(s);
         var tempX = funX;
         if(tempX!=0){
             tempX+=fx;
@@ -151,25 +151,25 @@ function drawFlowchart($xml,selector,options){
     };
     function drawStart(content){
         flow.Y += 20;
-        var l = Math.max(calcExtraWidth(content)-35,35);
+        var padding = 10;
+        var l = Math.max(calcExtraWidth(content),50)/2+padding;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 '  <g class="start">'+
                 '    <ellipse class="symbol" cx="0" cy="0" rx="'+l+'" ry="20"/>'+
-                '    <text x="0" y="5">'+content+'</text>'+
+                '    <text x="0" y="4">'+content+'</text>'+
                 '  </g>'+
                 '</g>';
         flow.Y += 20;
-        //console.log("start ("+flow.Y+")");
         return s;
     };
     function drawEnd(content){
-        //console.log("end ("+flow.Y+")");
-        var l = Math.max(calcExtraWidth(content)-30,35);
+        var padding = 10;
+        var l = Math.max(calcExtraWidth(content),50)/2+padding;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
                 '  <g class="end" transform="translate(0,'+(options.aH+30)+')">'+
                 '    <ellipse class="symbol" cx="0" cy="0" rx="'+l+'" ry="20"/>'+
-                '    <text x="0" y="5">'+content+'</text>'+
+                '    <text x="0" y="4">'+content+'</text>'+
                 '  </g>'+
                 '</g>';
         flow.Y += 50+options.aH;
@@ -306,8 +306,8 @@ function drawFlowchart($xml,selector,options){
         }
         else{ 
             var contidionWidth = Math.max(calcExtraWidth(condition),70)+20;
-            condition = '<text x="0" y="30">'+condition.escape()+'</text>';
-            romH = 25;
+            condition = '<text x="0" y="31">'+condition.escape()+'</text>';
+            romH = 27;
         }
         var oldY = 0, maxH = 0;
         oldY = flow.Y;
@@ -520,14 +520,14 @@ function drawFlowchart($xml,selector,options){
         return l;
     };
     function calcBlockWidth(content){
-        $("#gtest").get(0).innerHTML = content;
-        var l = $('#gtest').get(0).getBBox().width;
+        $('#gtest').get(0).innerHTML = '<g transform="translate(0,0)">'+content+'</g>';
+        var l = $('#gtest').children('g').get(0).getBBox().width;
         maxW = Math.max(maxW,l);
         return l;
     };
     function calcBlockX(content){
-        $("#gtest").get(0).innerHTML = content;
-        return Math.abs($('#gtest').get(0).getBBox().x);
+        $("#gtest").get(0).innerHTML = '<g transform="translate(0,0)">'+content+'</g>';
+        return Math.abs($('#gtest').children('g').get(0).getBBox().x);
     };
     function drawArrow(){
         return '<line class="arrow" x1="0" y1="0" x2="0" y2="'+options.aH+'"/>';
