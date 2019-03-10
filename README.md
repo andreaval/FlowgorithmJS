@@ -24,23 +24,23 @@ drawFlowchartFromUrl(fprgUrl,tagId,options);
 *http://domain/file.fprg*
 ```xml
 <?xml version="1.0"?>
-  <flowgorithm fileversion="2.11">
-    <attributes>
-      <attribute name="name" value="Next number"/>
-      <attribute name="authors" value="Andrea Vallorani"/>
-      <attribute name="about" value="Print the next of a given number"/>
-      <attribute name="saved" value="2018-01-23 06:36:28 PM"/>
-      <attribute name="created" value="YW5kcmVhO3VidW50dTsyMDE4LTAxLTIzOzA1OjMxOjMxIFBNOzI1Njg="/>
-      <attribute name="edited" value="YW5kcmVhO3VidW50dTsyMDE4LTAxLTIzOzA2OjM2OjI4IFBNOzQ7MjY5MQ=="/>
-    </attributes>
-    <function name="Main" type="None" variable="">
-      <parameters/>
-      <body>
-        <declare name="N, NEXT" type="Integer" array="False" size=""/>
-        <input variable="N"/>
-        <assign variable="NEXT" expression="N+1"/>
-        <output expression="NEXT"/>
-      </body>
+<flowgorithm fileversion="2.11">
+  <attributes>
+    <attribute name="name" value="Next number"/>
+    <attribute name="authors" value="Andrea Vallorani"/>
+    <attribute name="about" value="Print the next of a given number"/>
+    <attribute name="saved" value="2018-01-23 06:36:28 PM"/>
+    <attribute name="created" value="YW5kcmVhO3VidW50dTsyMDE4LTAxLTIzOzA1OjMxOjMxIFBNOzI1Njg="/>
+    <attribute name="edited" value="YW5kcmVhO3VidW50dTsyMDE4LTAxLTIzOzA2OjM2OjI4IFBNOzQ7MjY5MQ=="/>
+  </attributes>
+  <function name="Main" type="None" variable="">
+    <parameters/>
+    <body>
+      <declare name="N, NEXT" type="Integer" array="False" size=""/>
+      <input variable="N"/>
+      <assign variable="NEXT" expression="N+1"/>
+      <output expression="NEXT"/>
+    </body>
   </function>
 </flowgorithm>
 ```
