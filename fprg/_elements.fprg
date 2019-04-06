@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="All Flowgorithm elements"/>
+        <attribute name="authors" value="Andrea Vallorani"/>
+        <attribute name="about" value="Base test case"/>
+        <attribute name="saved" value="2019-04-06 17.55.45 "/>
+        <attribute name="created" value="YW5kcmU7REVTS1RPUC1TNFFIVENJOzIwMTktMDItMTc7IjA0LjI4LjI4ICI7Mjc5NA=="/>
+        <attribute name="edited" value="YW5kcmU7REVTS1RPUC1TNFFIVENJOzIwMTktMDItMTc7IjA0LjI4LjQ1ICI7MTsyOTAx"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <declare name="N,N2,N3,N4,N5" type="Integer" array="False" size=""/>
+            <declare name="S" type="String" array="False" size=""/>
+            <declare name="B" type="Boolean" array="False" size=""/>
+            <declare name="A" type="Real" array="True" size="10"/>
+            <input variable="N"/>
+            <output expression="&quot;Text line &quot; &amp; N" newline="True"/>
+            <assign variable="N" expression="R"/>
+            <call expression="Selections()"/>
+        </body>
+    </function>
+    <function name="Selections" type="None" variable="">
+        <parameters/>
+        <body>
+            <if expression="condition">
+                <then>
+                    <more/>
+                </then>
+                <else>
+                    <more/>
+                </else>
+            </if>
+            <if expression="condition">
+                <then>
+                    <more/>
+                </then>
+                <else/>
+            </if>
+            <if expression="condition">
+                <then/>
+                <else>
+                    <more/>
+                </else>
+            </if>
+        </body>
+    </function>
+    <function name="Iteractions" type="Integer" variable="P1">
+        <parameters>
+            <parameter name="P1" type="Integer" array="False"/>
+        </parameters>
+        <body>
+            <while expression="condition">
+                <more/>
+            </while>
+            <do expression="condition">
+                <more/>
+            </do>
+            <for variable="I" start="0" end="N" step="1">
+                <more/>
+            </for>
+            <while expression="condition">
+            </while>
+        </body>
+    </function>
+    <function name="ComplexConditions" type="Real" variable="P1">
+        <parameters>
+            <parameter name="P1" type="Real" array="False"/>
+            <parameter name="P2" type="Real" array="False"/>
+        </parameters>
+        <body>
+            <if expression="part1 and part2 or part3">
+                <then>
+                    <more/>
+                </then>
+                <else/>
+            </if>
+            <while expression="part1 &amp;&amp; (part2 || part3) &amp;&amp; (part4 || part5 || part6)">
+                <more/>
+            </while>
+            <do expression="part1 &amp;&amp; (part2 || part3) &amp;&amp; (part4 || part5 || part6)">
+                <more/>
+            </do>
+        </body>
+    </function>
+</flowgorithm>
