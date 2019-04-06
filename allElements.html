@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FlowgorithmJS offline</title>
+  <meta charset="utf-8">
+  <script src="lib/jquery-3.3.1.min.js"></script>
+  <script src="flowgorithm.js?016"></script>
+  <script>
+	var url1 = 'fprg/_elements.fprg';
+	$(function(){
+		drawFlowchartFromUrl(url1,'#f1');
+	});
+  </script>
+  <style>
+  h1{font-size:1.2em}
+  </style>
+</head>
+<body>
+    <h1>FlowgorithmJS - Example of use</h1>
+    <div class="f">
+        <div id="f1"></div>
+        <div id="xml1"></div>
+    </div>
+</body>
+</html>
