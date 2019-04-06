@@ -1,7 +1,7 @@
 /**
  * FlowgorithmJS
- * @version 0.15
- * @date 2019-03-05
+ * @version 0.16
+ * @date 2019-04-07
  * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  */
 var maxW,maxH,flowX=0,funX=0;
@@ -24,6 +24,7 @@ function drawFlowchart($xml,selector,options){
     //default settings
     options = $.extend(true,{
         aH: 12, //arrow length
+        aT: 10, //arrow tip size
         groupInput: false,
         viewDesc: true, //print description
         itMode: 2 //pre-Iteraction style
@@ -54,8 +55,8 @@ function drawFlowchart($xml,selector,options){
       '  .symbol{stroke:#000;stroke-width:1px;fill:#fff}'+
       '  ]]></style> '+
       '  <defs>'+
-      '    <marker id="arrow" markerWidth="12" markerHeight="12" refX="0" refY="5" orient="auto" markerUnits="strokeWidth">'+
-      '      <path d="M0,0 L0,10 L10,5 z" fill="#000" />'+
+      '    <marker id="arrow" markerWidth="12" markerHeight="12" refX="0" refY="'+(options.aT/2)+'" orient="auto" markerUnits="strokeWidth">'+
+      '      <path d="M0,0 L0,'+options.aT+' L'+options.aT+','+(options.aT/2)+' z" fill="#000" />'+
       '    </marker>'+
       '  </defs><text id="ttest" style="visibility:hidden"></text><g id="gtest" style="visibility:hidden"></g></svg>').css('text-align','center');
     //draw flowchart  
@@ -89,7 +90,7 @@ function drawFlowchart($xml,selector,options){
                 txtStart += '(';
                 params.each(function(i){
                     if(i>0) txtStart += ',';
-                    txtStart += $(this).attr('name');
+                    txtStart += $(this).attr('type')+' '+$(this).attr('name');
                 });
                 txtStart += ')';
             }
@@ -140,6 +141,7 @@ function drawFlowchart($xml,selector,options){
                 case 'for': s += drawPreIteraction($el.attr('variable')+'='+$el.attr('start')+' TO '+$el.attr('end'),$el); break;
                 case 'while': s += drawPreIteraction($el.attr('expression'),$el); break;
                 case 'do': s += drawPostIteraction($el.attr('expression'),$el); break;
+                case 'more': s += drawMore(); break;
             }
         });
         s += '</g>';
@@ -167,12 +169,12 @@ function drawFlowchart($xml,selector,options){
         var l = Math.max(calcExtraWidth(content),50)/2+padding;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="end" transform="translate(0,'+(options.aH+30)+')">'+
+                '  <g class="end" transform="translate(0,'+(options.aH+options.aT+20)+')">'+
                 '    <ellipse class="symbol" cx="0" cy="0" rx="'+l+'" ry="20"/>'+
                 '    <text x="0" y="4">'+content+'</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 50+options.aH;
+        flow.Y += 40+options.aH+options.aT;
         return s;
     };
     function drawDeclare(content){
@@ -180,14 +182,14 @@ function drawFlowchart($xml,selector,options){
         var l = Math.max(calcExtraWidth(content),60)+20;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="assign" transform="translate('+(-l/2)+','+(options.aH+10)+')">'+
+                '  <g class="assign" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
                 '    <rect class="symbol" width="'+l+'" height="36"/>'+
                 '    <line class="line" x1="5" y1="0" x2="5" y2="36"/>'+
                 '    <line class="line" x1="0" y1="5" x2="'+l+'" y2="5"/>'+
                 '    <text x="'+(l/2+3)+'" y="25">'+content+'</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 46+options.aH;
+        flow.Y += 36+options.aH+options.aT;
         return s;
     };
     function drawAssign(content){
@@ -195,12 +197,12 @@ function drawFlowchart($xml,selector,options){
         var l = Math.max(calcExtraWidth(content),60)+10;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="assign" transform="translate('+(-l/2)+','+(options.aH+10)+')">'+
+                '  <g class="assign" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
                 '    <rect class="symbol" width="'+(l)+'" height="36"/>'+
                 '    <text x="'+(l/2)+'" y="23">'+content+'</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 46+options.aH;
+        flow.Y += 36+options.aH+options.aT;
         return s;
     };
     function drawInput(content){
@@ -208,14 +210,14 @@ function drawFlowchart($xml,selector,options){
         var l = Math.max(calcExtraWidth(content),50);
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="input" transform="translate('+(-l/2)+','+(options.aH+10)+')">'+
+                '  <g class="input" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
                 '    <polygon class="symbol" points="0,0 -20,36 '+l+',36 '+(20+l)+',0"/>'+
                 '    <path class="line" d="M'+(0+l)+',0 q0,15 13,13"/>'+
                 '    <text x="'+(l/2)+'" y="23">'+content+'</text>'+
                 '    <text class="iotype" x="'+(10+l)+'" y="10">i</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 46+options.aH;
+        flow.Y += 36+options.aH+options.aT;
         return s;
     };
     function drawOutput(content){
@@ -223,38 +225,40 @@ function drawFlowchart($xml,selector,options){
         var l = Math.max(calcExtraWidth(content),50);
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="output" transform="translate('+(-l/2)+','+(options.aH+10)+')">'+
+                '  <g class="output" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
                 '    <polygon class="symbol" points="0,0 -20,36 '+l+',36 '+(20+l)+',0"/>'+
                 '    <path class="line" d="M'+(l)+',0 q0,15 13,13"/>'+
                 '    <text x="'+(l/2)+'" y="23">'+content+'</text>'+
                 '    <text class="iotype" x="'+(10+l)+'" y="9">o</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 46+options.aH;
+        flow.Y += 36+options.aH+options.aT;
         return s;
     };
     function drawCall(content){
         var l = Math.max(calcExtraWidth(content),60)+20;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="sub-program" transform="translate('+(-l/2)+','+(options.aH+10)+')">'+
+                '  <g class="sub-program" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
                 '    <rect class="symbol" width="'+l+'" height="36"/>'+
                 '    <line class="line" x1="5" y1="0" x2="5" y2="36"/>'+
                 '    <line class="line" x1="'+(l-5)+'" y1="0" x2="'+(l-5)+'" y2="36"/>'+
                 '    <text x="'+(l/2)+'" y="23">'+content+'</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 46+options.aH;
+        flow.Y += 36+options.aH+options.aT;
         return s;
     };
     function drawMore(){
+        var text = "...";
+        var l = calcExtraWidth(text);
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="other" transform="translate(0,'+(options.aH+10)+')">'+
-                '    <text x="50" y="15">...</text>'+
+                '  <g class="other" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
+                '    <text x="'+(l/2)+'" y="15">'+text+'</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 50+options.aH;
+        flow.Y += 28+options.aH+options.aT;
         return s;
     };
     function drawEmptyBlock(){
@@ -265,59 +269,61 @@ function drawFlowchart($xml,selector,options){
         return s;
     };
     function splitCondition(condition){
-        condition = condition.replace(/ AND /gi," && ").replace(/ OR /gi," || ");
-        var parts = condition.split(/&&|\|\|/);
+        var i,tot=0,start=0,nl=false;
         var lines = [];
-        $(parts).each(function(i){
-            var part = $.trim(this);
-            if(i<parts.length-1){
-                condition = condition.substring(part.length);
-                part += condition.substring(0,3);
-                condition = condition.substring(4);
+        for(i=0;i<condition.length;i++){
+            if((i+1)%10==0 || nl){
+                if(condition.charAt(i)==' ' && i-start>5){
+                    lines[tot]=condition.substring(start,i);
+                    tot++;
+                    start=i+1;
+                    nl=false;
+                }
+                else nl=true;
             } 
-            lines[i] = part;
-        });
+        }
+        lines[tot]=condition.substring(start);
         //console.log(lines);
         return lines;
-    };
+    }
     function drawSelection(condition,$branchTrue,$branchFalse){
+        var minPathWidth = 30; //minimum path width
+        var circleRadius = 4; //circle radius of rejoining paths 
         var parts = splitCondition(condition);
         var romH;
+        var contidionWidth = 0;
         if(parts.length>1){
-            contidionWidth = 0;
             condition = '';
-            var conditionRow = '';
-            var nRows = 0;
+            var nRows = parts.length;
             $(parts).each(function(i){
-                if(conditionRow.length>0) conditionRow += ' ';
-                conditionRow += this;
-                if(calcExtraWidth(conditionRow)>80){
-                    condition += '<tspan x="0" dy="1.1em">'+conditionRow.escape()+'</tspan>';
-                    var l = calcExtraWidth(conditionRow);
-                    if(contidionWidth<l) contidionWidth=l;
-                    conditionRow = '';
-                    nRows++;
-                }
+                contidionWidth = Math.max(calcExtraWidth(this),contidionWidth);
+                condition += '<tspan x="0" dy="1.1em">'+this.escape()+'</tspan>';
             });
-            contidionWidth += 30*nRows;
-            var yc = 10+(16*(nRows-1));
-            romH = 22*nRows;
+            contidionWidth += 20*nRows;
+            var yc = 11*nRows;
             condition = '<text x="0" y="'+yc+'">'+condition+'</text>';
+            romH = 20*nRows;
         }
         else{ 
-            var contidionWidth = Math.max(calcExtraWidth(condition),70)+20;
-            condition = '<text x="0" y="31">'+condition.escape()+'</text>';
+            contidionWidth = calcExtraWidth(condition);
+            condition = '<text x="0" y="32">'+condition.escape()+'</text>';
             romH = 27;
         }
+        contidionWidth = Math.max(contidionWidth,50)+30;
         var oldY = 0, maxH = 0;
         oldY = flow.Y;
         flow.Y = 0;
         var halfCondition = contidionWidth/2;
-        var svgSequenceTrue = drawSequence($branchTrue);
-        var trueWidth = calcBlockX(svgSequenceTrue)+halfCondition-5;
+        var svgSequenceTrue = '';
+        var trueWidth = halfCondition-5;
+        if($branchTrue.children().length>0){
+            svgSequenceTrue = drawSequence($branchTrue);
+            trueWidth+=Math.max(calcBlockX(svgSequenceTrue),minPathWidth);
+        }
+        else trueWidth+=minPathWidth;
         var s = '<g class="block" transform="translate(0,'+oldY+')">'+
                 drawArrow()+
-                '  <g class="selection" transform="translate(0,'+(options.aH+10)+')">'+
+                '  <g class="selection" transform="translate(0,'+(options.aH+options.aT)+')">'+
                 '    <g class="condition">'+
                 '      <polygon class="symbol" points="0,0 '+halfCondition+','+romH+' 0,'+(romH*2)+' '+(-halfCondition)+','+(romH)+'"/>'+
                         condition+
@@ -327,60 +333,57 @@ function drawFlowchart($xml,selector,options){
                 '      <text x="'+(halfCondition+10)+'" y="'+(romH-5)+'">T</text>'+
                 '    </g>'+
                 '    <g class="true-path" transform="translate('+trueWidth+','+(romH+10)+')">'+svgSequenceTrue+'</g>';
-        var branchTrueHeight = flow.Y+romH-5;
-        //console.log("branch TRUE height: "+branchTrueHeight);
+        var branchTrueHeight = flow.Y+romH;
         flow.Y = 0;
         var svgSequenceFalse = '';
         var falseWidth = halfCondition-5; 
         if($branchFalse.children().length>0){
             svgSequenceFalse = drawSequence($branchFalse);
-            falseWidth = calcBlockWidth(svgSequenceFalse)-calcBlockX(svgSequenceFalse)+falseWidth;
+            falseWidth += Math.max(calcBlockWidth(svgSequenceFalse)-calcBlockX(svgSequenceFalse),minPathWidth);
         }
-        else falseWidth+=30;
+        else falseWidth+=minPathWidth;
         s+=     '    <g class="arrow-left">'+
                 '      <polyline class="line" points="'+(-halfCondition)+','+romH+' '+(-falseWidth)+','+romH+' '+(-falseWidth)+','+(romH+10)+'"/>'+
                 '      <text x="'+(-halfCondition-10)+'" y="'+(romH-5)+'">F</text>'+
                 '    </g>'+
                 '    <g class="false-path" transform="translate('+(-falseWidth)+','+(romH+10)+')">'+svgSequenceFalse+'</g>';
-        var branchFalseHeight = flow.Y+romH-5;
-        //console.log("branch FALSE height: "+branchFalseHeight);
+        var branchFalseHeight = flow.Y+romH;
         if(branchTrueHeight>branchFalseHeight){
-            s += '<polyline class="line" points="'+(-falseWidth)+','+(branchFalseHeight+15)+' '+(-falseWidth)+','+(branchTrueHeight+romH-10)+'"/>';
+            s += '<polyline class="line" points="'+(-falseWidth)+','+(branchFalseHeight+10)+' '+(-falseWidth)+','+(branchTrueHeight+romH-12)+'"/>';
         }
         else if(branchTrueHeight<branchFalseHeight){
-            s += '<polyline class="line" points="'+trueWidth+','+(branchTrueHeight+15)+' '+trueWidth+','+(branchFalseHeight+romH-10)+'"/>';
+            s += '<polyline class="line" points="'+trueWidth+','+(branchTrueHeight+10)+' '+trueWidth+','+(branchFalseHeight+romH-12)+'"/>';
         }
-        var maxBranchesHeight = Math.max(branchTrueHeight,branchFalseHeight);        
-        s +=    '    <g class="selection-close" transform="translate(0,'+(maxBranchesHeight+15)+')">'+
-                '      <polyline class="line" points="'+trueWidth+',0 '+trueWidth+',25 4,25"/>'+
-                '      <polyline class="line" points="'+(-falseWidth)+',0 '+(-falseWidth)+',25 -4,25"/>'+
-                '      <circle class="symbol" cx="0" cy="25" r="4"/>'+
+        var endHeight=options.aT+options.aH+3;
+        var maxBranchesHeight = Math.max(branchTrueHeight,branchFalseHeight)+10;
+        s +=    '    <g class="selection-close" transform="translate(0,'+(maxBranchesHeight)+')">'+
+                '      <polyline class="line" points="'+trueWidth+',0 '+trueWidth+','+endHeight+' '+circleRadius+','+endHeight+'"/>'+
+                '      <polyline class="line" points="'+(-falseWidth)+',0 '+(-falseWidth)+','+endHeight+' -'+circleRadius+','+endHeight+'"/>'+
+                '      <circle class="symbol" cx="0" cy="'+endHeight+'" r="'+circleRadius+'"/>'+
                 '    </g>'+
                 '  </g>'+
                 '</g>';
-        flow.Y = oldY+maxBranchesHeight+54+options.aH;
+        flow.Y = oldY+maxBranchesHeight+circleRadius+endHeight+options.aT+options.aH;
         calcBlockWidth(s);
         return s;
     };
     function drawPreIteraction(condition,$content){
         var parts = splitCondition(condition);
         var romH;
+        var contidionWidth=0;
         if(parts.length>1){
-            contidionWidth = 0;
             condition = '';
             $(parts).each(function(i){
-                var part = this;
-                condition += '<tspan x="0" dy="1.1em">'+part.escape()+'</tspan>';
-                var l = calcExtraWidth(part);
-                if(contidionWidth<l) contidionWidth=l;
+                contidionWidth = Math.max(calcExtraWidth(this),contidionWidth);
+                condition += '<tspan x="0" dy="1.1em">'+this.escape()+'</tspan>';
             });
-            contidionWidth+=20+(15*(parts.length-1));
-            var yc = 10+(14*(parts.length-1));
+            contidionWidth += 2*parts.length;
+            var yc = parts.length;
             condition = '<text x="0" y="'+yc+'">'+condition+'</text>';
-            romH = 15*parts.length;
+            romH = 9*parts.length;
         }
         else{ 
-            var contidionWidth = Math.max(calcExtraWidth(condition),70)+20;
+            contidionWidth = Math.max(calcExtraWidth(condition),60);
             condition = '<text x="0" y="25">'+condition.escape()+'</text>';
             romH = 20;
         }
@@ -391,20 +394,20 @@ function drawFlowchart($xml,selector,options){
         var contentDraw = ($content.children().length>0) ? drawSequence($content) : drawEmptyBlock();
         var contentWidth = calcBlockWidth(contentDraw);
         var half = Math.max(calcBlockX(contentDraw),40);
-        flow.Y += 25;
-        s +=    '  <g class="preIteraction" transform="translate(0,'+(options.aH+10)+')">'+
+        s +=    '  <g class="preIteraction" transform="translate(0,'+(options.aH+options.aT)+')">'+
                 '    <g class="condition">'+
                 '      <polygon class="symbol" points="0,0 '+condW2+',0 '+(condW2+15)+','+romH+' '+condW2+','+(romH*2)+' '+(-condW2)+','+(romH*2)+' '+(-condW2-15)+','+(romH)+' '+(-condW2)+',0"/>'+
                         condition+
                 '    </g>';
+        //don't use this variant
         if(options.itMode===1){        
             s += '    <g class="true-path" transform="translate('+(condW2+15)+','+(romH)+')">'+
                  '       <polyline class="line" points="0,0 '+half+',0"/>'+
                  '       <text x="10" y="-5">T</text>'+
                  '       <g class="true-branch" transform="translate('+half+',0)">';
             s += contentDraw;
-            s += '           <g class="true-close" transform="translate(0,'+(flow.Y-25)+')">'+
-                 '               <polyline class="arrow" points="0,0 0,15 '+(-half-15-condW2)+',15 '+(-half-15-condW2)+','+(-flow.Y+(romH*2)+15)+'"/>'+
+            s += '           <g class="true-close" transform="translate(0,'+flow.Y+')">'+
+                 '               <polyline class="arrow" points="0,0 0,15 '+(-half-15-condW2)+',15 '+(-half-15-condW2)+','+(-flow.Y+romH*2)+'"/>'+
                  '           </g>'+
                  '       </g>'+
                  '    </g>'+
@@ -414,79 +417,79 @@ function drawFlowchart($xml,selector,options){
                  '    </g>'+
                  '  </g>'+
                  '</g>';
-            flow.Y += oldY+options.aH+30;
+            flow.Y += oldY+options.aH+options.aT+20;
         }
         else if(options.itMode===2){
-            s += '    <g class="true-path" transform="translate('+(condW2+15)+','+(romH)+')">'+
-                 '       <polyline class="line" points="0,0 '+(half-5)+',0"/>'+
+            var down=Math.max(0,romH-options.aH-options.aT);
+            s += '    <g class="true-path" transform="translate('+(condW2+15)+','+romH+')">'+
+                 '       <polyline class="line" points="0,0 '+(half-5)+',0 '+(half-5)+','+down+'"/>'+
                  '       <text x="10" y="-5">T</text>'+
-                 '       <g class="true-branch" transform="translate('+(half-5)+',0)">';
+                 '       <g class="true-branch" transform="translate('+(half-5)+','+down+')">';
             s += contentDraw;
-            s += '           <g class="true-close" transform="translate(0,'+(flow.Y-25)+')">'+
-                 '               <polyline class="arrow" points="0,0 0,15 '+(-half+15-condW2)+',15 '+(-half+15-condW2)+','+(-flow.Y+(romH*2)+15)+'"/>'+
+            s += '           <g class="true-close" transform="translate(0,'+(flow.Y)+')">'+
+                 '               <polyline class="arrow" points="0,0 0,15 '+(-half+15-condW2)+',15 '+(-half+15-condW2)+',0 '+(-half+15-condW2)+','+(-flow.Y+(options.aT*2)+options.aH)+'"/>'+
                  '           </g>'+
                  '       </g>'+
                  '    </g>'+
                  '    <g class="false-path" transform="translate(0,'+(romH*2)+')">'+
-                 '       <polyline class="line" points="0,0 0,'+flow.Y+'"/>'+
+                 '       <polyline class="line" points="0,0 0,'+(flow.Y-15)+'"/>'+
                  '       <text x="-10" y="18">F</text>'+
                  '    </g>'+
                  '  </g>'+
                  '</g>';
-            flow.Y += oldY+options.aH+30;
+            flow.Y += oldY+(romH*2)+options.aH+options.aT-15;
         }
         else if(options.itMode===3){
             s += '    <g class="true-path" transform="translate(0,'+(romH*2)+')">'+
                  '       <text x="10" y="14">T</text>'+
                  '       <g class="true-branch" transform="translate(0,0)">';
             s += contentDraw;
-            s += '           <g class="true-close" transform="translate(0,'+(flow.Y-25)+')">'+
-                 '               <polyline class="arrow" points="0,0 0,10 '+(-half+10-condW2)+',10 '+(-half+10-condW2)+','+(-flow.Y+5)+' '+(-condW2-25)+','+(-flow.Y+5)+'"/>'+
+            s += '           <g class="true-close" transform="translate(0,'+flow.Y+')">'+
+                 '               <polyline class="arrow" points="0,0 0,10 '+(-half+5-condW2)+',10 '+(-half+5-condW2)+','+(-flow.Y-romH)+' '+(-condW2-25)+','+(-flow.Y-romH)+'"/>'+
                  '           </g>'+
                  '       </g>'+
                  '    </g>'+
                  '    <g class="false-path" transform="translate('+(condW2+15)+','+(romH)+')">'+
-                 '       <polyline class="line" points="0,0 '+(contentWidth-half)+',0 '+(contentWidth-half)+','+(flow.Y+options.aH)+' '+(-condW2-16)+','+(flow.Y+options.aH)+'"/>'+
-                 '       <text x="10" y="-10">F</text>'+
+                 '       <polyline class="line" points="0,0 '+Math.max((half-condW2),15)+',0 '+Math.max((half-condW2),15)+','+(flow.Y+romH+10+10)+' '+(-condW2-15)+','+(flow.Y+romH+10+10)+'"/>'+
+                 '       <text x="10" y="-5">F</text>'+
                  '    </g>'+
                  '  </g>'+
                  '</g>';
-            flow.Y += oldY+options.aH+43;
+            flow.Y += oldY+(romH*2)+20+options.aH+options.aT;
         }
         return s;
     };
     function drawPostIteraction(condition,$content){
         var parts = splitCondition(condition);
         var romH;
+        var contidionWidth = 0;
         if(parts.length>1){
-            contidionWidth = 0;
             condition = '';
             $(parts).each(function(i){
-                var part = this;
-                condition += '<tspan x="0" dy="1.1em">'+part.escape()+'</tspan>';
-                var l = calcExtraWidth(part);
-                if(contidionWidth<l) contidionWidth=l;
+                contidionWidth = Math.max(calcExtraWidth(this),contidionWidth);
+                condition += '<tspan x="0" dy="1.1em">'+this.escape()+'</tspan>';
             });
-            contidionWidth+=20+(15*(parts.length-1));
-            //var yc = 2+(0*(parts.length-1));
-            var yc = 2;
+            contidionWidth+=2*parts.length;
+            var yc = parts.length;
             condition = '<text x="0" y="'+yc+'">'+condition+'</text>';
-            romH = 10*parts.length;
+            romH = 9*parts.length;
         }
         else{ 
-            var contidionWidth = Math.max(calcExtraWidth(condition),50);
+            contidionWidth = calcExtraWidth(condition);
             condition = '<text x="0" y="25">'+condition.escape()+'</text>';
             romH = 20;
         }
+        contidionWidth = Math.max(contidionWidth,60);
         var condW2 = contidionWidth/2;
-        var s = '<g class="block" transform="translate(0,'+flow.Y+')"><line class="line" x1="0" y1="0" x2="0" y2="'+(options.aH*2)+'"/><circle class="symbol" cx="0" cy="'+(options.aH*2)+'" r="4"/>';
+        var s = '<g class="block" transform="translate(0,'+flow.Y+')"><line class="line" x1="0" y1="0" x2="0" y2="'+(options.aH+options.aT)+'"/><circle class="symbol" cx="0" cy="'+(options.aH+options.aT)+'" r="4"/>';
         var oldY = flow.Y;
         flow.Y = 0;
         var contentDraw = ($content.children().length>0) ? drawSequence($content) : drawEmptyBlock();
         var contentWidth = calcBlockWidth(contentDraw);
-        var half = Math.max(calcBlockX(contentDraw)+10,condW2+30);
+        var half = Math.max(calcBlockX(contentDraw),condW2+40);
+        half+=6;
         flow.Y += 15;
-        s +=    '  <g class="postIteraction" transform="translate(0,'+(options.aH*2)+')">';
+        s +=    '  <g class="postIteraction" transform="translate(0,'+(options.aH+options.aT)+')">';
                 
         if(options.itMode===1 || options.itMode===2 || options.itMode===3){        
             s += '    <g class="true-path" transform="translate(4,0)">'+
@@ -505,11 +508,11 @@ function drawFlowchart($xml,selector,options){
                  '       <text x="-12" y="'+(romH*2+15)+'">F</text>'+
                  '       <polyline class="line" points="0,'+(romH*2)+' 0,'+(romH*2+10)+'"/>'+
                  '    </g>';
-            s += '    <polyline class="arrow" points="0,'+flow.Y+' 0,14"/>'+
+            s += '    <polyline class="arrow" points="0,'+(flow.Y)+' 0,14"/>'+
                  '  </g>'+
                  '</g>';
-            flow.Y += romH;
-            flow.Y += oldY+options.aH+40;
+            flow.Y += romH*2;
+            flow.Y += oldY+options.aH+options.aT+10;
         }
         return s;
     };
