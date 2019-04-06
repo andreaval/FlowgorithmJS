@@ -11,4 +11,4 @@
 - [x] Gestione funzioni
 - [x] Migliorare posizionamento funzioni
 - [ ] Add pre-load and post-load events
-- [x] Add "viewDesc" and "itMode" settings to "drawLocal" page 
+- [x] Add "viewDesc" and "itMode" settings to "drawLocal" page
