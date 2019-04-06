@@ -14,6 +14,7 @@
 	$(function(){
 		drawFlowchartFromUrl(url1,'#f1',config);
 		drawFlowchartFromUrl(url2,'#f2',config);
+        //$('#xml1').load(url1);
 	});
   </script>
   <style>
@@ -23,7 +24,13 @@
 </head>
 <body>
     <h1>FlowgorithmJS - Example of use</h1>
-    <div id="f1" class="f"></div>
-    <div id="f2" class="f"></div>
+    <div class="f">
+        <div id="f1"></div>
+        <div id="xml1"></div>
+    </div>
+    <div class="f">
+        <div id="f2"></div>
+        <div id="xml2"></div>
+    </div>
 </body>
 </html>

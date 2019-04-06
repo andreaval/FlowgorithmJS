@@ -15,6 +15,7 @@
             xml = reader.result;
             config.groupInput = ($("input[name='o1']:checked").val()==='1') ? true : false;
             config.aH = parseInt($("#o2").val());
+            config.aT = parseInt($("#o2b").val());
             config.itMode = parseInt($("#o3").val());
             config.viewDesc = ($("input[name='o4']:checked").val()==='1') ? true : false;
             drawFlowchartFromSource(xml,'#f',config);
@@ -61,14 +62,16 @@
             <label for="o1b">No<input type="radio" value="0" name="o1" id="o1b"></label>
         </div>
         <div class="row">
-            <label for="o2">Distance between shapes: <input type="number" min="1" max="100" value="12" style="width:50px" name="groupInput" id="o2"></label>
+            <label for="o2">Arrow length: <input type="number" min="5" max="100" value="12" style="width:50px" name="groupInput" id="o2"></label>
+        </div>
+        <div class="row">
+            <label for="o2b">Arrow tip size: <input type="number" min="5" max="100" value="10" style="width:50px" name="groupInput" id="o2b"></label>
         </div>
         <div class="row">
             <label for="o3">Style of pre-conditional iterations:</label> 
             <select name="o3" id="o3">
                 <option value="2" selected>Flowgorithm style</option>
                 <option value="3">Variant 1</option>
-                <option value="1">Variant 2</option>
             </select>
         </div>
         <div class="row">
