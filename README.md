@@ -4,6 +4,10 @@ To save the data, it use an XML format stored in files with the **.fprg** extens
 
 FlowgorithmJS is a **_third-party_** tool written in Javascript that can read and display the .fprg files on a web page using SVG format.
 
+**All elements supported by FlowgorithmJS (version 0.16) and their design:**
+![Elements 0.16](img/elements016.svg)
+
+
 ## Include library
 ```js
 <script src="lib/jquery-3.3.1.min.js"></script>
