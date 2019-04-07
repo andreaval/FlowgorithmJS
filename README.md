@@ -109,4 +109,3 @@ drawFlowchartFromUrl(fprgUrl,tagId,options);
 
 * View file from local computer: [https://andreaval.github.io/FlowgorithmJS/drawLocal.html](https://andreaval.github.io/FlowgorithmJS/drawLocal.html)
 * View file from online folder: [https://andreaval.github.io/FlowgorithmJS/drawWeb.html](https://andreaval.github.io/FlowgorithmJS/drawWeb.html)
-* View all elements: [https://andreaval.github.io/FlowgorithmJS/allElements.html](https://andreaval.github.io/FlowgorithmJS/allElements.html)
