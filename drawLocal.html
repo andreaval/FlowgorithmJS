@@ -3,8 +3,8 @@
 <head>
   <title>FlowgorithmJS offline</title>
   <meta charset="utf-8">
-  <script src="lib/jquery-3.3.1.min.js"></script>
-  <script src="flowgorithm.js?014"></script>
+  <script src="lib/jquery-3.5.0.min.js"></script>
+  <script src="flowgorithm.js?016"></script>
   <script>
     var config = {};
     var xml;
@@ -18,6 +18,13 @@
             config.aT = parseInt($("#o2b").val());
             config.itMode = parseInt($("#o3").val());
             config.viewDesc = ($("input[name='o4']:checked").val()==='1') ? true : false;
+            config.labelTrue = $("#o5").val();
+            config.labelFalse = $("#o6").val();
+            /*$('#f').on("flowgorithmjs:preload",function(){
+                alert('preload');
+            }).on("flowgorithmjs:postload",function(){
+                alert('postload');
+            });*/
             drawFlowchartFromSource(xml,'#f',config);
             $('#choose').removeClass('big');
             $('body').addClass('view');
@@ -58,14 +65,14 @@
     <div id="chooseOption" class="noprint">
         <div class="row">
             Grouping consecutive input: 
-            <label for="o1">Yes<input type="radio" value="1" name="o1" id="o1" checked></label>
-            <label for="o1b">No<input type="radio" value="0" name="o1" id="o1b"></label>
+            <label for="o1">Yes<input type="radio" value="1" name="o1" id="o1"></label>
+            <label for="o1b">No<input type="radio" value="0" name="o1" id="o1b" checked></label>
         </div>
         <div class="row">
             <label for="o2">Arrow length: <input type="number" min="5" max="100" value="12" style="width:50px" name="groupInput" id="o2"></label>
         </div>
         <div class="row">
-            <label for="o2b">Arrow tip size: <input type="number" min="5" max="100" value="10" style="width:50px" name="groupInput" id="o2b"></label>
+            <label for="o2b">Arrow tip size: <input type="number" min="5" max="100" value="7" style="width:50px" name="groupInput" id="o2b"></label>
         </div>
         <div class="row">
             <label for="o3">Style of pre-conditional iterations:</label> 
@@ -78,6 +85,12 @@
             Print the description above the flowchart: 
             <label for="o4">Yes<input type="radio" value="1" name="o4" id="o4" checked></label>
             <label for="o4b">No<input type="radio" value="0" name="o4" id="o4b"></label>
+        </div>
+        <div class="row">
+            <label for="o2b">Label True: <input type="text" value="True" style="width:50px" id="o5"></label>
+        </div>
+        <div class="row">
+            <label for="o2b">Label False: <input type="text" value="False" style="width:50px" id="o6"></label>
         </div>
     </div>
     <div id="f"></div>
