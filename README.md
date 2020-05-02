@@ -12,7 +12,7 @@ FlowgorithmJS is a **_third-party_** tool written in Javascript that can read an
 
 ## Include library
 ```js
-<script src="lib/jquery-3.3.1.min.js"></script>
+<script src="lib/jquery-3.5.0.min.js"></script>
 <script src="flowgorithm.js"></script>
 ```
 
@@ -55,7 +55,7 @@ drawFlowchartFromUrl(fprgUrl,tagId,options);
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="lib/jquery-3.3.1.min.js"></script>
+  <script src="lib/jquery-3.5.0.min.js"></script>
   <script src="flowgorithm.js"></script>
   <script>
     $(function(){
@@ -74,7 +74,7 @@ drawFlowchartFromUrl(fprgUrl,tagId,options);
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="lib/jquery-3.3.1.min.js"></script>
+  <script src="lib/jquery-3.5.0.min.js"></script>
   <script src="flowgorithm.js"></script>
   <script>
     var xml = `<?xml version="1.0"?>
