@@ -1,10 +1,10 @@
 /**
  * FlowgorithmJS
- * @version 0.16
- * @date 2019-04-07
+ * @version 0.17a1
+ * @date 2020-05-02
  * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  */
-var maxW,maxH,flowX=0,funX=0;
+var maxW,flowX=0,funX=0;
 var flow;
 function drawFlowchartFromUrl(url,selector,options){
     $.ajax({
@@ -24,13 +24,16 @@ function drawFlowchart($xml,selector,options){
     //default settings
     options = $.extend(true,{
         aH: 12, //arrow length
-        aT: 10, //arrow tip size
+        aT: 7, //arrow tip size
         groupInput: false,
         viewDesc: true, //print description
-        itMode: 2 //pre-Iteraction style
+        itMode: 2, //pre-Iteraction style
+        labelTrue: "True",
+        labelFalse: "False"
     },options);
     //--
     var $output = $(selector);
+    $output.trigger("flowgorithmjs:preload");
     flowX=0,funX=0;
     flow = {Y:0,fWidth:0,dim:[]};
     $output.empty();
@@ -72,6 +75,7 @@ function drawFlowchart($xml,selector,options){
     $svg.attr('width',gwidth+10).attr('height',gheight+15).attr('viewBox','0 0 '+(gwidth+10)+' '+(gheight+15));
     var disc = 0-$svg.children('g').get(0).getBBox().x+5;
     $svg.children('g').attr('transform',"translate("+(disc)+",0)");
+    $output.trigger("flowgorithmjs:postload");
 
     function drawFunction($xml){
         maxW = 0;
@@ -123,7 +127,9 @@ function drawFlowchart($xml,selector,options){
                 case 'declare': var array = ($el.attr('array')==="True") ? '['+$el.attr('size')+']' : '';
                                 s += drawDeclare($el.attr('type')+' '+$el.attr('name')+array); 
                                 break;
-                case 'output': s += drawOutput($el.attr('expression')); break;
+                case 'output':  var outString = $el.attr('expression');
+                                if($el.attr('newline')==='False') outString+=' ...';
+                                s += drawOutput(outString); break;
                 case 'input':   if(i>nextI){
                                     var vars = $el.attr('variable');
                                     if(options.groupInput){
@@ -147,7 +153,7 @@ function drawFlowchart($xml,selector,options){
         s += '</g>';
         flow.Y += oldY;
         //console.log("sequence ("+flow.Y+")");
-        if(flow.Y>maxH) maxH = flow.Y;
+        //if(flow.Y>maxH) maxH = flow.Y;
         //if($xml.children('if').length>0) maxW+=100;
         return s;
     };
@@ -287,7 +293,10 @@ function drawFlowchart($xml,selector,options){
         return lines;
     }
     function drawSelection(condition,$branchTrue,$branchFalse){
-        var minPathWidth = 30; //minimum path width
+        var labelTrueSize = Math.max(calcExtraWidth(options.labelTrue),20);
+        var labelFalseSize = Math.max(calcExtraWidth(options.labelFalse),20);
+        var minPathWidth = Math.max(30,labelTrueSize+5,labelFalseSize+5); //minimum path width
+        console.log(labelFalseSize*2);
         var circleRadius = 4; //circle radius of rejoining paths 
         var parts = splitCondition(condition);
         var romH;
@@ -310,7 +319,7 @@ function drawFlowchart($xml,selector,options){
             romH = 27;
         }
         contidionWidth = Math.max(contidionWidth,50)+30;
-        var oldY = 0, maxH = 0;
+        var oldY = 0;
         oldY = flow.Y;
         flow.Y = 0;
         var halfCondition = contidionWidth/2;
@@ -330,7 +339,7 @@ function drawFlowchart($xml,selector,options){
                 '    </g>'+
                 '    <g class="arrow-right">'+
                 '      <polyline class="line" points="'+halfCondition+','+romH+' '+trueWidth+','+romH+' '+trueWidth+','+(romH+10)+'"/>'+
-                '      <text x="'+(halfCondition+10)+'" y="'+(romH-5)+'">T</text>'+
+                '      <text x="'+(halfCondition+labelTrueSize/2)+'" y="'+(romH-5)+'">'+options.labelTrue+'</text>'+
                 '    </g>'+
                 '    <g class="true-path" transform="translate('+trueWidth+','+(romH+10)+')">'+svgSequenceTrue+'</g>';
         var branchTrueHeight = flow.Y+romH;
@@ -344,15 +353,15 @@ function drawFlowchart($xml,selector,options){
         else falseWidth+=minPathWidth;
         s+=     '    <g class="arrow-left">'+
                 '      <polyline class="line" points="'+(-halfCondition)+','+romH+' '+(-falseWidth)+','+romH+' '+(-falseWidth)+','+(romH+10)+'"/>'+
-                '      <text x="'+(-halfCondition-10)+'" y="'+(romH-5)+'">F</text>'+
+                '      <text x="'+(-halfCondition-labelFalseSize/2)+'" y="'+(romH-5)+'">'+options.labelFalse+'</text>'+
                 '    </g>'+
                 '    <g class="false-path" transform="translate('+(-falseWidth)+','+(romH+10)+')">'+svgSequenceFalse+'</g>';
         var branchFalseHeight = flow.Y+romH;
         if(branchTrueHeight>branchFalseHeight){
-            s += '<polyline class="line" points="'+(-falseWidth)+','+(branchFalseHeight+10)+' '+(-falseWidth)+','+(branchTrueHeight+romH-12)+'"/>';
+            s += '<polyline class="line" points="'+(-falseWidth)+','+(branchFalseHeight+10)+' '+(-falseWidth)+','+(branchTrueHeight+10)+'"/>';
         }
         else if(branchTrueHeight<branchFalseHeight){
-            s += '<polyline class="line" points="'+trueWidth+','+(branchTrueHeight+10)+' '+trueWidth+','+(branchFalseHeight+romH-12)+'"/>';
+            s += '<polyline class="line" points="'+trueWidth+','+(branchTrueHeight+10)+' '+trueWidth+','+(branchFalseHeight+10)+'"/>';
         }
         var endHeight=options.aT+options.aH+3;
         var maxBranchesHeight = Math.max(branchTrueHeight,branchFalseHeight)+10;
@@ -368,6 +377,8 @@ function drawFlowchart($xml,selector,options){
         return s;
     };
     function drawPreIteraction(condition,$content){
+        var labelTrueSize = Math.max(calcExtraWidth(options.labelTrue),16);
+        var labelFalseSize = Math.max(calcExtraWidth(options.labelFalse),16);
         var parts = splitCondition(condition);
         var romH;
         var contidionWidth=0;
@@ -403,7 +414,7 @@ function drawFlowchart($xml,selector,options){
         if(options.itMode===1){        
             s += '    <g class="true-path" transform="translate('+(condW2+15)+','+(romH)+')">'+
                  '       <polyline class="line" points="0,0 '+half+',0"/>'+
-                 '       <text x="10" y="-5">T</text>'+
+                 '       <text x="10" y="-5">'+options.labelTrue+'</text>'+
                  '       <g class="true-branch" transform="translate('+half+',0)">';
             s += contentDraw;
             s += '           <g class="true-close" transform="translate(0,'+flow.Y+')">'+
@@ -413,7 +424,7 @@ function drawFlowchart($xml,selector,options){
                  '    </g>'+
                  '    <g class="false-path" transform="translate('+(-condW2-15)+','+(romH)+')">'+
                  '       <polyline class="line" points="0,0 -25,0 -25,'+flow.Y+' '+(condW2+15)+','+flow.Y+'"/>'+
-                 '       <text x="-10" y="-5">F</text>'+
+                 '       <text x="-10" y="-5">'+options.labelFalse+'</text>'+
                  '    </g>'+
                  '  </g>'+
                  '</g>';
@@ -423,7 +434,7 @@ function drawFlowchart($xml,selector,options){
             var down=Math.max(0,romH-options.aH-options.aT);
             s += '    <g class="true-path" transform="translate('+(condW2+15)+','+romH+')">'+
                  '       <polyline class="line" points="0,0 '+(half-5)+',0 '+(half-5)+','+down+'"/>'+
-                 '       <text x="10" y="-5">T</text>'+
+                 '       <text x="'+(labelTrueSize/2+2)+'" y="-5">'+options.labelTrue+'</text>'+
                  '       <g class="true-branch" transform="translate('+(half-5)+','+down+')">';
             s += contentDraw;
             s += '           <g class="true-close" transform="translate(0,'+(flow.Y)+')">'+
@@ -433,7 +444,7 @@ function drawFlowchart($xml,selector,options){
                  '    </g>'+
                  '    <g class="false-path" transform="translate(0,'+(romH*2)+')">'+
                  '       <polyline class="line" points="0,0 0,'+(flow.Y-15)+'"/>'+
-                 '       <text x="-10" y="18">F</text>'+
+                 '       <text x="-'+(labelFalseSize/2+4)+'" y="18">'+options.labelFalse+'</text>'+
                  '    </g>'+
                  '  </g>'+
                  '</g>';
@@ -441,7 +452,7 @@ function drawFlowchart($xml,selector,options){
         }
         else if(options.itMode===3){
             s += '    <g class="true-path" transform="translate(0,'+(romH*2)+')">'+
-                 '       <text x="10" y="14">T</text>'+
+                 '       <text x="'+(labelTrueSize/2+6)+'" y="14">'+options.labelTrue+'</text>'+
                  '       <g class="true-branch" transform="translate(0,0)">';
             s += contentDraw;
             s += '           <g class="true-close" transform="translate(0,'+flow.Y+')">'+
@@ -451,7 +462,7 @@ function drawFlowchart($xml,selector,options){
                  '    </g>'+
                  '    <g class="false-path" transform="translate('+(condW2+15)+','+(romH)+')">'+
                  '       <polyline class="line" points="0,0 '+Math.max((half-condW2),15)+',0 '+Math.max((half-condW2),15)+','+(flow.Y+romH+10+10)+' '+(-condW2-15)+','+(flow.Y+romH+10+10)+'"/>'+
-                 '       <text x="10" y="-5">F</text>'+
+                 '       <text x="'+(labelFalseSize/2+1)+'" y="-5">'+options.labelFalse+'</text>'+
                  '    </g>'+
                  '  </g>'+
                  '</g>';
