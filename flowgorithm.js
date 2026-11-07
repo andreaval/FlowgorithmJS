@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * FlowgorithmJS
- * @version 1.0a1
- * @date 2026-03-08
+ * @version 1.0a2
+ * @date 2026-11-07
  * @author Andrea Vallorani <andrea.vallorani@gmail.com>
  */
-export const version = '1.0a1'; //FlowgorithmJS version
+export const version = '1.0a2'; //FlowgorithmJS version
 
 /**
  * Draw a flowchart from a URL
@@ -257,7 +257,7 @@ export class Flowchart{
             var fwidth = calcBlockWidth(s)+5;
             var fx = calcBlockX(s);
             var tempX = funX;
-            if(tempX!=0){
+            if(tempX!==0){
                 tempX+=fx;
                 funX+=fwidth;
             }
@@ -285,7 +285,7 @@ export class Flowchart{
                                         var vars = $el.attr('variable');
                                         if(options.groupInput){
                                             nextI = i+1;
-                                            while($xml.children().eq(nextI).prop("tagName")=='input'){
+                                            while($xml.children().eq(nextI).prop("tagName")==='input'){
                                                 vars += ', '+$xml.children().eq(nextI).attr('variable');
                                                 nextI++;
                                             }
@@ -429,8 +429,8 @@ export class Flowchart{
             var i,tot=0,start=0,nl=false;
             var lines = [];
             for(i=0;i<condition.length;i++){
-                if((i+1)%10==0 || nl){
-                    if(condition.charAt(i)==' ' && i-start>5){
+                if((i+1)%10===0 || nl){
+                    if(condition.charAt(i)===' ' && i-start>5){
                         lines[tot]=condition.substring(start,i);
                         tot++;
                         start=i+1;
@@ -584,12 +584,13 @@ export class Flowchart{
             else if(options.itMode===2){
                 var down=Math.max(0,romH-options.aH-options.aT);
                 s += '    <g class="true-path" transform="translate('+(condW2+15)+','+romH+')">'+
-                     '       <polyline class="line" points="0,0 '+(half-5)+',0 '+(half-5)+','+down+'"/>'+
+                     '       <polyline class="line" points="0,0 '+(half-5)+',0"/>'+
                      '       <text x="'+(labelTrueSize/2+2)+'" y="-5">'+options.labelTrue+'</text>'+
-                     '       <g class="true-branch" transform="translate('+(half-5)+','+down+')">';
+                     '       <g class="true-branch" transform="translate('+(half-5)+',0)">';
                 s += contentDraw;
+                var maxSH = Math.max(options.aH+options.aT,romH);
                 s += '           <g class="true-close" transform="translate(0,'+(flow.Y)+')">'+
-                     '               <polyline class="arrow" points="0,0 0,15 '+(-half+15-condW2)+',15 '+(-half+15-condW2)+',0 '+(-half+15-condW2)+','+(-flow.Y+(options.aT*2)+options.aH)+'"/>'+
+                     '               <polyline class="arrow" points="0,0 0,'+down+' '+(-half+15-condW2)+','+down+' '+(-half+15-condW2)+',0 '+(-half+15-condW2)+','+(-flow.Y+options.aT+maxSH)+'"/>'+
                      '           </g>'+
                      '       </g>'+
                      '    </g>'+
@@ -660,7 +661,7 @@ export class Flowchart{
                      '       <g class="true-branch" transform="translate('+half+',0)">';
                 s += contentDraw+
                      '           <g class="true-close" transform="translate(0,'+(flow.Y-15)+')">'+
-                     '               <polyline class="arrow" points="0,0 0,'+(15+romH)+' '+(-Math.abs(half-condW2-20))+','+(15+romH)+'"/>'+
+                     '               <polyline class="arrow" points="0,0 0,'+(15+romH)+' '+(-Math.abs(half-condW2-(23-options.aT)))+','+(15+romH)+'"/>'+
                      '           </g>';
                 s += '       </g>'+
                      '    </g>'+
@@ -670,7 +671,7 @@ export class Flowchart{
                      '       <text x="-12" y="'+(romH*2+15)+'">F</text>'+
                      '       <polyline class="line" points="0,'+(romH*2)+' 0,'+(romH*2+10)+'"/>'+
                      '    </g>';
-                s += '    <polyline class="arrow" points="0,'+(flow.Y)+' 0,14"/>'+
+                s += '    <polyline class="arrow" points="0,'+(flow.Y)+' 0,'+(options.aT+4)+'"/>'+
                      '  </g>'+
                      '</g>';
                 flow.Y += romH*2;
