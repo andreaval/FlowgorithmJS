@@ -370,7 +370,7 @@ export class Flowchart{
                     '  <g class="input" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
                     '    <polygon class="symbol" points="0,0 -20,36 '+l+',36 '+(20+l)+',0"/>'+
                     '    <path class="line" d="M'+(0+l)+',0 q0,15 13,13"/>'+
-                    '    <text x="'+(l/2)+'" y="23">'+content+'</text>'+
+                    '    <text x="'+(l/2)+'" y="23">'+content.escape()+'</text>'+
                     '    <text class="iotype" x="'+(10+l)+'" y="10">i</text>'+
                     '  </g>'+
                     '</g>';
