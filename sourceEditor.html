@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FlowgorithmJS Source Editor</title>
+        <meta charset="utf-8">
+        <script src="lib/jquery-4.0.0.min.js"></script>
+        <script type="module" src="flowgorithm.js"></script>
+        <script>
+            import * as flowJS from "./flowgorithm.js";
+            var editor;
+            $(function(){
+                $('button').click(function(){
+                    let flowchart = flowJS.drawFromSource(editor.getValue(),'#flowchart',{aH:12,aT:7});
+                    $('#name').html(flowchart.name);
+                    $('#authors').html(flowchart.authors);
+                    $('#about').html(flowchart.about);
+                    $('#saved').html(flowchart.saved);
+                    $('#created').html(flowchart.created);
+                    $('#edited').html('');
+                    flowchart.edited.forEach(function(r){
+                        $('#edited').append(r+'<br>');
+                    });
+                });
+            });
+        </script>
+        <style>
+            h1{height:calc(8vh);margin:0;padding:0}
+            main{display:grid;grid-template-columns:1fr 1fr;height:calc(90vh)}
+            #editor{margin-right:1em}
+            aside{padding:0 2em;border-left:3px solid #ddd}
+            details i{padding:0 .3em 0 0}
+        </style>
+    </head>
+    <body>
+        <h1>FlowgorithmJS Source Editor <button>Draw</button></h1>
+        <main>
+            <div id="editor"></div>
+            <aside>
+                <details>
+                    <summary>Attributes</summary>
+                    <div><i>Name:</i><span id="name"></span></div>
+                    <div><i>Authors:</i><span id="authors"></span></div>
+                    <div><i>About:</i><span id="about"></span></div>
+                    <div><i>Saved</i><span id="saved"></span></div>
+                    <div><i>Created:</i><span id="created"></span></div>
+                    <div><i>Edited:</i><span id="edited"></span></div>
+                </details>
+                <div id="flowchart"></div>
+            </aside>
+        </main>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.js" integrity="sha512-T2otaV2NuxAJAOCoj8ijyy+eAAadZlpvdLmakrIGVFbBkthgIFqLTXd+T8Z+S+kf4V7Ib5+6f6r4D4IdS9Ey4A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/mode-xml.min.js" integrity="sha512-/EEA3Udhi+prq1A0HoibvQ0BY0h4GfrqSEZsM0ON3qoOypCThr4euJxyx+a3ONABJGr1DbbtwyYFLLi/ECzHjg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            editor = ace.edit("editor");
+            editor.session.setMode("ace/mode/xml");
+        </script>
+    </body>
+</html>
