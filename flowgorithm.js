@@ -389,7 +389,7 @@ function drawFlowchart($xml,selector,options){
         else if(trueY<falseY)
             s += '<polyline class="line" points="'+trueWidth+','+(halfHeight+trueY+adj)+' '+trueWidth+','+(halfHeight+falseY+adj)+'"/>';
         let endHeight=options.aT+options.aH+adj;
-        let maxBranchesHeight = halfHeight+adj+flow.Y+adj;
+        let maxBranchesHeight = halfHeight+adj+flow.Y;
         s +=    '    <g class="selection-close" transform="translate(0,'+maxBranchesHeight+')">'+
                 '      <polyline class="line" points="'+trueWidth+',0 '+trueWidth+','+endHeight+' '+circleRadius+','+endHeight+'"/>'+
                 '      <polyline class="line" points="'+(-falseWidth)+',0 '+(-falseWidth)+','+endHeight+' -'+circleRadius+','+endHeight+'"/>'+
