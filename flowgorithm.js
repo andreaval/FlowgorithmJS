@@ -51,7 +51,7 @@ function drawFlowchart($xml,selector,options){
     var $output = $(selector);
     $output.trigger("flowgorithmjs:preload");
     flowX=0,funX=0;
-    flow = {Y:0,fWidth:0,dim:[],firstEl:true};
+    flow = {Y:0,fWidth:0,dim:[],firstEl:true,lastArrH:0};
     $output.empty();
     if(options.viewDesc){
         var title = $xml.find('attribute[name=name]').attr('value');
@@ -87,7 +87,7 @@ function drawFlowchart($xml,selector,options){
     $svg.get(0).innerHTML += '<g transform="translate(0,0)">'+svg+'</g>';
     $svg.children('g').eq(0).remove();
     var gwidth = $svg.children('g').get(0).getBBox().width;
-    var gheight = $svg.children('g').get(0).getBBox().height;
+    var gheight = Math.max($svg.children('g').get(0).getBBox().height,flow.Y);
     $svg.attr('width',gwidth+10).attr('height',gheight+15).attr('viewBox','0 0 '+(gwidth+10)+' '+(gheight+15));
     var disc = 0-$svg.children('g').get(0).getBBox().x+5;
     $svg.children('g').attr('transform',"translate("+(disc)+",0)");
@@ -193,12 +193,12 @@ function drawFlowchart($xml,selector,options){
         var l = Math.max(calcExtraWidth(content),50)/2+padding;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="end" transform="translate(0,'+(options.aH+options.aT+20)+')">'+
+                '  <g class="end" transform="translate(0,'+(flow.lastArrH+20)+')">'+
                 '    <ellipse class="symbol" cx="0" cy="0" rx="'+l+'" ry="20"/>'+
                 '    <text x="0" y="4">'+content.escape()+'</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 40+options.aH+options.aT;
+        flow.Y += 40+flow.lastArrH;
         return s;
     };
     function drawDeclare(content){
@@ -206,14 +206,14 @@ function drawFlowchart($xml,selector,options){
         var l = Math.max(calcExtraWidth(content),60)+20;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="assign" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
+                '  <g class="assign" transform="translate('+(-l/2)+','+flow.lastArrH+')">'+
                 '    <rect class="symbol" width="'+l+'" height="36"/>'+
                 '    <line class="line" x1="5" y1="0" x2="5" y2="36"/>'+
                 '    <line class="line" x1="0" y1="5" x2="'+l+'" y2="5"/>'+
                 '    <text x="'+(l/2+3)+'" y="25">'+content.escape()+'</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 36+options.aH+options.aT;
+        flow.Y += 36+flow.lastArrH;
         return s;
     };
     function drawAssign(content){
@@ -221,12 +221,12 @@ function drawFlowchart($xml,selector,options){
         var l = Math.max(calcExtraWidth(content),60)+10;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="assign" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
+                '  <g class="assign" transform="translate('+(-l/2)+','+flow.lastArrH+')">'+
                 '    <rect class="symbol" width="'+(l)+'" height="36"/>'+
                 '    <text x="'+(l/2)+'" y="23">'+content.escape()+'</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 36+options.aH+options.aT;
+        flow.Y += 36+flow.lastArrH;
         return s;
     };
     function drawInput(content){
@@ -234,14 +234,14 @@ function drawFlowchart($xml,selector,options){
         var l = Math.max(calcExtraWidth(content),50);
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="input" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
+                '  <g class="input" transform="translate('+(-l/2)+','+flow.lastArrH+')">'+
                 '    <polygon class="symbol" points="0,0 -20,36 '+l+',36 '+(20+l)+',0"/>'+
                 '    <path class="line" d="M'+(0+l)+',0 q0,15 13,13"/>'+
                 '    <text x="'+(l/2)+'" y="23">'+content.escape()+'</text>'+
                 '    <text class="iotype" x="'+(10+l)+'" y="10">i</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 36+options.aH+options.aT;
+        flow.Y += 36+flow.lastArrH;
         return s;
     };
     function drawOutput(content){
@@ -249,28 +249,28 @@ function drawFlowchart($xml,selector,options){
         var l = Math.max(calcExtraWidth(content),50);
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="output" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
+                '  <g class="output" transform="translate('+(-l/2)+','+flow.lastArrH+')">'+
                 '    <polygon class="symbol" points="0,0 -20,36 '+l+',36 '+(20+l)+',0"/>'+
                 '    <path class="line" d="M'+(l)+',0 q0,15 13,13"/>'+
                 '    <text x="'+(l/2)+'" y="23">'+content.escape()+'</text>'+
                 '    <text class="iotype" x="'+(10+l)+'" y="9">o</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 36+options.aH+options.aT;
+        flow.Y += 36+flow.lastArrH;
         return s;
     };
     function drawCall(content){
         var l = Math.max(calcExtraWidth(content),60)+20;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="sub-program" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
+                '  <g class="sub-program" transform="translate('+(-l/2)+','+flow.lastArrH+')">'+
                 '    <rect class="symbol" width="'+l+'" height="36"/>'+
                 '    <line class="line" x1="5" y1="0" x2="5" y2="36"/>'+
                 '    <line class="line" x1="'+(l-5)+'" y1="0" x2="'+(l-5)+'" y2="36"/>'+
                 '    <text x="'+(l/2)+'" y="23">'+content.escape()+'</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 36+options.aH+options.aT;
+        flow.Y += 36+flow.lastArrH;
         return s;
     };
     function drawMore(){
@@ -278,11 +278,11 @@ function drawFlowchart($xml,selector,options){
         var l = calcExtraWidth(text);
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 drawArrow()+
-                '  <g class="other" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
+                '  <g class="other" transform="translate('+(-l/2)+','+flow.lastArrH+')">'+
                 '    <text x="'+(l/2)+'" y="15">'+text+'</text>'+
                 '  </g>'+
                 '</g>';
-        flow.Y += 28+options.aH+options.aT;
+        flow.Y += 28+flow.lastArrH;
         return s;
     };
     function drawEmptyBlock(){
@@ -311,6 +311,10 @@ function drawFlowchart($xml,selector,options){
         return lines;
     }
     function drawSelection(condition,$branchTrue,$branchFalse){
+        var oldY = flow.Y;
+        var s = '<g class="block" transform="translate(0,'+oldY+')">'+
+                drawArrow()+
+                '  <g class="selection" transform="translate(0,'+flow.lastArrH+')">';
         var labelTrueSize = Math.max(calcExtraWidth(options.labelTrue),20);
         var labelFalseSize = Math.max(calcExtraWidth(options.labelFalse),20);
         var minPathWidth = Math.max(30,labelTrueSize+5,labelFalseSize+5); //minimum path width
@@ -339,8 +343,6 @@ function drawFlowchart($xml,selector,options){
         var halfWidth = cRW/2;
         var halfHeight = cTH/2+d;
         
-        var oldY = 0;
-        oldY = flow.Y;
         flow.Y = 0;
         var svgSequenceTrue = '';
         var trueWidth = halfWidth-5;
@@ -367,24 +369,20 @@ function drawFlowchart($xml,selector,options){
         if(flow.Y<=halfHeight)
             adj = (halfHeight-flow.Y)/2;
                 
-        var s = '<g class="block" transform="translate(0,'+oldY+')">'+
-                drawArrow()+
-                '  <g class="selection" transform="translate(0,'+(options.aH+options.aT)+')">'+
-                '    <g class="condition">'+
-                '      <polygon class="symbol" points="0,0 '+halfWidth+','+halfHeight+' 0,'+(halfHeight*2)+' '+(-halfWidth)+','+(halfHeight)+'"/>'+
-                        condition+
-                '    </g>'+
-                '    <g class="arrow-right">'+
-                '      <polyline class="line" points="'+halfWidth+','+halfHeight+' '+trueWidth+','+halfHeight+' '+trueWidth+','+(halfHeight+adj)+'"/>'+
-                '      <text x="'+(halfWidth+labelTrueSize/2)+'" y="'+(halfHeight-5)+'">'+options.labelTrue+'</text>'+
-                '    </g>'+
-                '    <g class="true-path" transform="translate('+trueWidth+','+(halfHeight+adj)+')">'+svgSequenceTrue+'</g>';
-        
-        s+=     '    <g class="arrow-left">'+
-                '      <polyline class="line" points="'+(-halfWidth)+','+halfHeight+' '+(-falseWidth)+','+halfHeight+' '+(-falseWidth)+','+(halfHeight+adj)+'"/>'+
-                '      <text x="'+(-halfWidth-labelFalseSize/2)+'" y="'+(halfHeight-5)+'">'+options.labelFalse+'</text>'+
-                '    </g>'+
-                '    <g class="false-path" transform="translate('+(-falseWidth)+','+(halfHeight+adj)+')">'+svgSequenceFalse+'</g>';
+        s += '    <g class="condition">'+
+             '      <polygon class="symbol" points="0,0 '+halfWidth+','+halfHeight+' 0,'+(halfHeight*2)+' '+(-halfWidth)+','+(halfHeight)+'"/>'+
+                       condition+
+             '    </g>'+
+             '    <g class="arrow-right">'+
+             '      <polyline class="line" points="'+halfWidth+','+halfHeight+' '+trueWidth+','+halfHeight+' '+trueWidth+','+(halfHeight+adj)+'"/>'+
+             '      <text x="'+(halfWidth+labelTrueSize/2)+'" y="'+(halfHeight-5)+'">'+options.labelTrue+'</text>'+
+             '    </g>'+
+             '    <g class="true-path" transform="translate('+trueWidth+','+(halfHeight+adj)+')">'+svgSequenceTrue+'</g>'+
+             '    <g class="arrow-left">'+
+             '      <polyline class="line" points="'+(-halfWidth)+','+halfHeight+' '+(-falseWidth)+','+halfHeight+' '+(-falseWidth)+','+(halfHeight+adj)+'"/>'+
+             '      <text x="'+(-halfWidth-labelFalseSize/2)+'" y="'+(halfHeight-5)+'">'+options.labelFalse+'</text>'+
+             '    </g>'+
+             '    <g class="false-path" transform="translate('+(-falseWidth)+','+(halfHeight+adj)+')">'+svgSequenceFalse+'</g>';
         
         if(falseY<trueY)
             s += '<polyline class="line" points="'+(-falseWidth)+','+(halfHeight+falseY+adj)+' '+(-falseWidth)+','+(halfHeight+trueY+adj)+'"/>';
@@ -426,14 +424,14 @@ function drawFlowchart($xml,selector,options){
             romH = 20;
         }
         var condW2 = contidionWidth/2;
-        var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+drawArrow();
+        var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+drawArrow()+
+                '  <g class="preIteraction" transform="translate(0,'+flow.lastArrH+')">';
         var oldY = flow.Y;
         flow.Y = 0;
         var contentDraw = ($content.children().length>0) ? drawSequence($content) : drawEmptyBlock();
         var contentWidth = calcBlockWidth(contentDraw);
         var half = Math.max(calcBlockX(contentDraw),40);
-        s +=    '  <g class="preIteraction" transform="translate(0,'+(options.aH+options.aT)+')">'+
-                '    <g class="condition">'+
+        s +=    '    <g class="condition">'+
                 '      <polygon class="symbol" points="0,0 '+condW2+',0 '+(condW2+15)+','+romH+' '+condW2+','+(romH*2)+' '+(-condW2)+','+(romH*2)+' '+(-condW2-15)+','+(romH)+' '+(-condW2)+',0"/>'+
                         condition+
                 '    </g>';
@@ -520,6 +518,7 @@ function drawFlowchart($xml,selector,options){
         }
         contidionWidth = Math.max(contidionWidth,60);
         var condW2 = contidionWidth/2;
+        drawArrow();
         var s = '<g class="block" transform="translate(0,'+flow.Y+')"><line class="line" x1="0" y1="0" x2="0" y2="'+(options.aH+options.aT)+'"/><circle class="symbol" cx="0" cy="'+(options.aH+options.aT)+'" r="4"/>';
         var oldY = flow.Y;
         flow.Y = 0;
@@ -578,8 +577,10 @@ function drawFlowchart($xml,selector,options){
     function drawArrow(){
         if(flow.firstEl){
             flow.firstEl = false;
+            flow.lastArrH = 0;
             return '';
         }
+        flow.lastArrH = options.aH+options.aT;
         return '<line class="arrow" x1="0" y1="0" x2="0" y2="'+options.aH+'"/>';
     };
     function getSVGContents(inputString){
