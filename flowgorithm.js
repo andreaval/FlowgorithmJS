@@ -180,7 +180,7 @@ function drawFlowchart($xml,selector,options){
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
                 '  <g class="start">'+
                 '    <ellipse class="symbol" cx="0" cy="0" rx="'+l+'" ry="20"/>'+
-                '    <text x="0" y="4">'+content+'</text>'+
+                '    <text x="0" y="4">'+content.escape()+'</text>'+
                 '  </g>'+
                 '</g>';
         flow.Y += 20;
@@ -193,7 +193,7 @@ function drawFlowchart($xml,selector,options){
                 drawArrow()+
                 '  <g class="end" transform="translate(0,'+(options.aH+options.aT+20)+')">'+
                 '    <ellipse class="symbol" cx="0" cy="0" rx="'+l+'" ry="20"/>'+
-                '    <text x="0" y="4">'+content+'</text>'+
+                '    <text x="0" y="4">'+content.escape()+'</text>'+
                 '  </g>'+
                 '</g>';
         flow.Y += 40+options.aH+options.aT;
@@ -208,7 +208,7 @@ function drawFlowchart($xml,selector,options){
                 '    <rect class="symbol" width="'+l+'" height="36"/>'+
                 '    <line class="line" x1="5" y1="0" x2="5" y2="36"/>'+
                 '    <line class="line" x1="0" y1="5" x2="'+l+'" y2="5"/>'+
-                '    <text x="'+(l/2+3)+'" y="25">'+content+'</text>'+
+                '    <text x="'+(l/2+3)+'" y="25">'+content.escape()+'</text>'+
                 '  </g>'+
                 '</g>';
         flow.Y += 36+options.aH+options.aT;
@@ -221,7 +221,7 @@ function drawFlowchart($xml,selector,options){
                 drawArrow()+
                 '  <g class="assign" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
                 '    <rect class="symbol" width="'+(l)+'" height="36"/>'+
-                '    <text x="'+(l/2)+'" y="23">'+content+'</text>'+
+                '    <text x="'+(l/2)+'" y="23">'+content.escape()+'</text>'+
                 '  </g>'+
                 '</g>';
         flow.Y += 36+options.aH+options.aT;
@@ -235,7 +235,7 @@ function drawFlowchart($xml,selector,options){
                 '  <g class="input" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
                 '    <polygon class="symbol" points="0,0 -20,36 '+l+',36 '+(20+l)+',0"/>'+
                 '    <path class="line" d="M'+(0+l)+',0 q0,15 13,13"/>'+
-                '    <text x="'+(l/2)+'" y="23">'+content+'</text>'+
+                '    <text x="'+(l/2)+'" y="23">'+content.escape()+'</text>'+
                 '    <text class="iotype" x="'+(10+l)+'" y="10">i</text>'+
                 '  </g>'+
                 '</g>';
@@ -250,7 +250,7 @@ function drawFlowchart($xml,selector,options){
                 '  <g class="output" transform="translate('+(-l/2)+','+(options.aH+options.aT)+')">'+
                 '    <polygon class="symbol" points="0,0 -20,36 '+l+',36 '+(20+l)+',0"/>'+
                 '    <path class="line" d="M'+(l)+',0 q0,15 13,13"/>'+
-                '    <text x="'+(l/2)+'" y="23">'+content+'</text>'+
+                '    <text x="'+(l/2)+'" y="23">'+content.escape()+'</text>'+
                 '    <text class="iotype" x="'+(10+l)+'" y="9">o</text>'+
                 '  </g>'+
                 '</g>';
@@ -265,7 +265,7 @@ function drawFlowchart($xml,selector,options){
                 '    <rect class="symbol" width="'+l+'" height="36"/>'+
                 '    <line class="line" x1="5" y1="0" x2="5" y2="36"/>'+
                 '    <line class="line" x1="'+(l-5)+'" y1="0" x2="'+(l-5)+'" y2="36"/>'+
-                '    <text x="'+(l/2)+'" y="23">'+content+'</text>'+
+                '    <text x="'+(l/2)+'" y="23">'+content.escape()+'</text>'+
                 '  </g>'+
                 '</g>';
         flow.Y += 36+options.aH+options.aT;
