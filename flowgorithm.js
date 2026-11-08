@@ -348,6 +348,7 @@ function drawFlowchart($xml,selector,options){
         }
         else trueWidth+=minPathWidth;
         
+        let trueY = flow.Y;
         flow.Y = 0;
         var svgSequenceFalse = '';
         var falseWidth = halfWidth-5; 
@@ -356,16 +357,13 @@ function drawFlowchart($xml,selector,options){
             falseWidth += Math.max(calcBlockWidth(svgSequenceFalse)-calcBlockX(svgSequenceFalse),minPathWidth);
         }
         else falseWidth+=minPathWidth;
+        let falseY = flow.Y;
         
-        var adj=0,adjC=options.aT+options.aH;
-        var falseHeight = calcBlockHeight(svgSequenceFalse);
-        var trueHeight = calcBlockHeight(svgSequenceTrue);
-        var maxBH = Math.max(falseHeight,trueHeight);
-        if(maxBH+adjC<halfHeight+15){
-            adj = ((halfHeight+15)-(maxBH+adjC))/2;
-        }
+        var adj=0;
+        flow.Y = Math.max(falseY,trueY);
         
-        flow.Y = maxBH;
+        if(flow.Y<=halfHeight)
+            adj = (halfHeight-flow.Y)/2;
                 
         var s = '<g class="block" transform="translate(0,'+oldY+')">'+
                 drawArrow()+
@@ -386,22 +384,20 @@ function drawFlowchart($xml,selector,options){
                 '    </g>'+
                 '    <g class="false-path" transform="translate('+(-falseWidth)+','+(halfHeight+adj)+')">'+svgSequenceFalse+'</g>';
         
-        if(trueHeight>falseHeight){
-            s += '<polyline class="line" points="'+(-falseWidth)+','+(halfHeight+falseHeight+adj)+' '+(-falseWidth)+','+(halfHeight+trueHeight+adj)+'"/>';
-        }
-        else if(trueHeight<falseHeight){
-            s += '<polyline class="line" points="'+trueWidth+','+(halfHeight+trueHeight+adj)+' '+trueWidth+','+(halfHeight+falseHeight+adj)+'"/>';
-        }
-        var endHeight=adjC+adj;
-        var maxBranchesHeight = halfHeight+maxBH+adj;
-        s +=    '    <g class="selection-close" transform="translate(0,'+(maxBranchesHeight)+')">'+
+        if(falseY<trueY)
+            s += '<polyline class="line" points="'+(-falseWidth)+','+(halfHeight+falseY+adj)+' '+(-falseWidth)+','+(halfHeight+trueY+adj)+'"/>';
+        else if(trueY<falseY)
+            s += '<polyline class="line" points="'+trueWidth+','+(halfHeight+trueY+adj)+' '+trueWidth+','+(halfHeight+falseY+adj)+'"/>';
+        let endHeight=options.aT+options.aH+adj;
+        let maxBranchesHeight = halfHeight+adj+flow.Y+adj;
+        s +=    '    <g class="selection-close" transform="translate(0,'+maxBranchesHeight+')">'+
                 '      <polyline class="line" points="'+trueWidth+',0 '+trueWidth+','+endHeight+' '+circleRadius+','+endHeight+'"/>'+
                 '      <polyline class="line" points="'+(-falseWidth)+',0 '+(-falseWidth)+','+endHeight+' -'+circleRadius+','+endHeight+'"/>'+
                 '      <circle class="symbol" cx="0" cy="'+endHeight+'" r="'+circleRadius+'"/>'+
                 '    </g>'+
                 '  </g>'+
                 '</g>';
-        flow.Y = oldY+maxBranchesHeight+circleRadius+endHeight+options.aT+options.aH;
+        flow.Y = oldY+maxBranchesHeight+endHeight+circleRadius+options.aT+options.aH;
         calcBlockWidth(s);
         return s;
     };
