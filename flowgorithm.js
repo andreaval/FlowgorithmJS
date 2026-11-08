@@ -456,7 +456,7 @@ function drawFlowchart($xml,selector,options){
             flow.Y += oldY+options.aH+options.aT+20;
         }
         else if(options.itMode===2){
-            var down=Math.max(0,romH-options.aH-options.aT);
+            var down=Math.max(0,options.aH+options.aT);
             s += '    <g class="true-path" transform="translate('+(condW2+15)+','+romH+')">'+
                  '       <polyline class="line" points="0,0 '+(half-5)+',0"/>'+
                  '       <text x="'+(labelTrueSize/2+2)+'" y="-5">'+options.labelTrue+'</text>'+
@@ -469,12 +469,12 @@ function drawFlowchart($xml,selector,options){
                  '       </g>'+
                  '    </g>'+
                  '    <g class="false-path" transform="translate(0,'+(romH*2)+')">'+
-                 '       <polyline class="line" points="0,0 0,'+(flow.Y-15)+'"/>'+
+                 '       <polyline class="line" points="0,0 0,'+(flow.Y-5)+'"/>'+
                  '       <text x="-'+(labelFalseSize/2+4)+'" y="18">'+options.labelFalse+'</text>'+
                  '    </g>'+
                  '  </g>'+
                  '</g>';
-            flow.Y += oldY+(romH*2)+options.aH+options.aT-15;
+            flow.Y += oldY+(romH*2)+options.aH+options.aT-10;
         }
         else if(options.itMode===3){
             s += '    <g class="true-path" transform="translate(0,'+(romH*2)+')">'+
