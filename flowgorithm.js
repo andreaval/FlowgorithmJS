@@ -51,7 +51,7 @@ function drawFlowchart($xml,selector,options){
     var $output = $(selector);
     $output.trigger("flowgorithmjs:preload");
     flowX=0,funX=0;
-    flow = {Y:0,fWidth:0,dim:[]};
+    flow = {Y:0,fWidth:0,dim:[],firstEl:true};
     $output.empty();
     if(options.viewDesc){
         var title = $xml.find('attribute[name=name]').attr('value');
@@ -97,13 +97,14 @@ function drawFlowchart($xml,selector,options){
         maxW = 0;
         flow.Y = 0;
         flow.fWidth = 0;
+        flow.firstEl = true;
         var name = $xml.attr('name');
         var txtStart,txtEnd;
         if(name==='Main'){
             txtStart = 'START';
             txtEnd = 'END';
         } 
-        else{
+        else if(name!==''){
             txtStart = name;
             var params = $xml.find('parameter');
             if(params.length>0){
@@ -116,9 +117,10 @@ function drawFlowchart($xml,selector,options){
             }
             txtEnd = 'RETURN '+$xml.attr('variable');
         }
-        var s = drawStart(txtStart);
+        var s;
+        if(name!=='') s += drawStart(txtStart);
         s += drawSequence($xml.children('body'));
-        s += drawEnd(txtEnd);
+        if(name!=='') s += drawEnd(txtEnd);
         var fwidth = calcBlockWidth(s)+5;
         var fx = calcBlockX(s);
         var tempX = funX;
@@ -126,9 +128,8 @@ function drawFlowchart($xml,selector,options){
             tempX+=fx;
             funX+=fwidth;
         }
-        else{
+        else
             funX=fwidth-fx;
-        }
         flow.dim.push(flow.Y+20);
         return '<g transform="translate('+(tempX)+',10)" class="function '+name+'">'+s+'</g>';
     };
@@ -178,6 +179,7 @@ function drawFlowchart($xml,selector,options){
         var padding = 10;
         var l = Math.max(calcExtraWidth(content),50)/2+padding;
         var s = '<g class="block" transform="translate(0,'+flow.Y+')">'+
+                drawArrow()+
                 '  <g class="start">'+
                 '    <ellipse class="symbol" cx="0" cy="0" rx="'+l+'" ry="20"/>'+
                 '    <text x="0" y="4">'+content.escape()+'</text>'+
@@ -574,6 +576,10 @@ function drawFlowchart($xml,selector,options){
         return Math.abs($('#gtest').children('g').get(0).getBBox().x);
     };
     function drawArrow(){
+        if(flow.firstEl){
+            flow.firstEl = false;
+            return '';
+        }
         return '<line class="arrow" x1="0" y1="0" x2="0" y2="'+options.aH+'"/>';
     };
     function getSVGContents(inputString){
